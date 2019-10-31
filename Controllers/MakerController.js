@@ -1,23 +1,23 @@
-const MakerModel = require('../Models/MakerModel');
+const ModelOfMaker = require('../Models/MakerModel');
 
 exports.createMaker = function (req, res) {
-    var newModel = new MakerModel(req.body);
+    var newMaker = new ModelOfMaker(req.body);
 
     //handles null error 
-    if (!newModel.maker_name) {
+    if (!newMaker.maker_name) {
         res.status(400).send({ error: true, message: 'Please provide valid info about Maker' });
     }
     else {
-        MakerModel.createMaker(newModel, function (err, maker) {
+        ModelOfMaker.createMaker(newMaker, function (err, maker) {
             if (err)
                 res.send(err);
-            res.json({message: `Added new Maker: ${newModel.maker_name}`});
+            res.json({ message: `Added new Maker: ${newMaker.maker_name}` });
         });
     }
 };
 
 exports.returnAllMakers = function (req, res) {
-    MakerModel.getAllMakers(function (err, maker) {
+    ModelOfMaker.getAllMakers(function (err, maker) {
         // console.log('controller')
         if (err)
             res.send(err);
@@ -27,7 +27,7 @@ exports.returnAllMakers = function (req, res) {
 };
 
 exports.returnOneMaker = function (req, res) {
-    MakerModel.getOneMaker(req.params.maker_id, function (err, maker) {
+    ModelOfMaker.getOneMaker(req.params.maker_id, function (err, maker) {
         if (err)
             res.send(err);
         res.json(maker);
@@ -35,10 +35,10 @@ exports.returnOneMaker = function (req, res) {
 };
 
 exports.updateOneMaker = function (req, res) {
-    MakerModel.updateById(req.params.maker_id, new MakerModel(req.body), function (err, maker) {
+    ModelOfMaker.updateMakerById(req.params.maker_id, new ModelOfMaker(req.body), function (err, maker) {
         if (err)
             res.send(err);
-        res.json({message: maker.message});
+        res.json({ message: maker.message });
     });
 };
 
@@ -46,7 +46,7 @@ exports.updateOneMaker = function (req, res) {
 exports.deleteOneMaker = function (req, res) {
 
 
-    MakerModel.removeOneMaker(req.params.maker_id, function (err, task) {
+    ModelOfMaker.removeOneMaker(req.params.maker_id, function (err, task) {
         if (err)
             res.send(err);
         res.json({ message: 'Maker successfully deleted' });

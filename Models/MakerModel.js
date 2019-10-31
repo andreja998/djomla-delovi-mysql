@@ -43,7 +43,7 @@ Maker.getAllMakers = function (result) {
     });
 };
 
-Maker.updateById = function (maker_id, maker_name, result) {
+Maker.updateMakerById = function (maker_id, maker_name, result) {
     mysqlConn.query("UPDATE MAKER SET maker_name = ? WHERE MAKER.maker_id = ?", [maker_name, maker_id], function (err, res) {
         if (err) {
             console.log("error: ", err);
@@ -57,7 +57,6 @@ Maker.updateById = function (maker_id, maker_name, result) {
 
 Maker.removeOneMaker = function (maker_id, result) {
     mysqlConn.query("DELETE FROM MAKER WHERE maker_id = ?", [maker_id], function (err, res) {
-
         if (err) {
             console.log("error: ", err);
             result(null, err);

@@ -1,17 +1,6 @@
-// module.exports = function (app) {
-//     const makerCntrl = require('../Controllers/MakerController');
-//     app.route('/maker')
-//         .get(makerCntrl.listAllMakers)
-//         .post(makerCntrl.createMaker);
-
-//     app.route('/maker/:makerId')
-//         .get(makerCntrl.listOneMaker)
-//         .put(makerCntrl.updateOneMaker)
-//         .delete(makerCntrl.deleteOneMaker);
-// };
-
 module.exports = function (app) {
     var makerCntrl = require('../Controllers/MakerController');
+    var modelCntrl = require('../Controllers/ModelConteoller');
 
     // makerCntrl Routes
     app.route('/maker')
@@ -22,4 +11,15 @@ module.exports = function (app) {
         .get(makerCntrl.returnOneMaker)
         .put(makerCntrl.updateOneMaker)
         .delete(makerCntrl.deleteOneMaker);
+
+
+    // modelCntrl Routes
+    app.route('/model')
+        .get(modelCntrl.returnAllModels)
+        .post(modelCntrl.createModel);
+
+    app.route('/model/:model_id')
+        .get(modelCntrl.returnOneModel)
+        .put(modelCntrl.updateOneModel)
+        .delete(modelCntrl.deleteOneModel);
 };
