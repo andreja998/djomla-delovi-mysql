@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const makerRoutes = require('./Routes/MakerRoutes');
 const modelRoutes = require('./Routes/ModelRoutes');
 const categoryRoutes = require('./Routes/CategoryRoutes');
+const subcategoryRoutes = require('./Routes/SubcategoryRoutes');
 
 const app = express(); // Inicijalizacija app
 
@@ -23,7 +24,7 @@ app.use((req, res, next) => {
 app.use('/api/maker', makerRoutes);
 app.use('/api/model', modelRoutes);
 app.use('/api/category', categoryRoutes);
-// app.use('/api/subcategory');
+app.use('/api/subcategory', subcategoryRoutes);
 // app.use('/api/part');
 // app.use('/api/auth', userRoutes);
 // app.use('/images', express.static(path.join(__dirname, 'images')));
