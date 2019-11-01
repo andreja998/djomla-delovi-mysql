@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const makerRoutes = require('./Routes/MakerRoutes');
 const modelRoutes = require('./Routes/ModelRoutes');
+const categoryRoutes = require('./Routes/CategoryRoutes');
 
 const app = express(); // Inicijalizacija app
 
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
 
 app.use('/api/maker', makerRoutes);
 app.use('/api/model', modelRoutes);
-// app.use('/api/category');
+app.use('/api/category', categoryRoutes);
 // app.use('/api/subcategory');
 // app.use('/api/part');
 // app.use('/api/auth', userRoutes);
