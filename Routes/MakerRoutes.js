@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const makerControler = require('../Controllers/MakerControler');
+const makerControler = require('../Controllers/MakerController');
 
 
 router.post('/', makerControler.createMaker);
