@@ -1,1 +1,0 @@
-# djomla-delovi-mysql
