@@ -25,7 +25,7 @@ exports.getAllParts = (req, res) => {
             if (result.length <= 0) {
                 res.status(404).send(`No Parts found.`)
             } else {
-                res.status(200).send(result);
+                res.status(200).json(result);
             }
         }
     });
@@ -40,7 +40,7 @@ exports.getOnePart = (req, res) => {
             if (result.length <= 0) {
                 res.status(404).send("Part is not found.");
             } else {
-                res.status(200).send(result);
+                res.status(200).json(result);
             }
         }
     });

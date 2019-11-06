@@ -25,7 +25,7 @@ exports.getAllMakers = (req, res) => {
             if (result.length <= 0) {
                 res.status(404).send(`No Makers found.`)
             } else {
-                res.status(200).send(result);
+                res.status(200).json(result);
             }
         }
     });
@@ -40,7 +40,7 @@ exports.getOneMaker = (req, res) => {
             if (result.length <= 0) {
                 res.status(404).send("Maker is not found.");
             } else {
-                res.status(200).send(result);
+                res.status(200).json(result);
             }
         }
     });
