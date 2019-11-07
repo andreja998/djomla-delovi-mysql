@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CarService } from 'src/app/services/car.service';
+import { Router } from '@angular/router';
+import { SearchMode } from 'src/app/utils';
 
 @Component({
   selector: 'app-pocetna',
@@ -7,9 +10,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PocetnaComponent implements OnInit {
 
-  constructor() { }
+  searchName = 'Brza pretraga';
+  searchMode = SearchMode.SIMPLE;
+
+  constructor(private carService: CarService, private router: Router) {}
 
   ngOnInit() {
+  }
+
+  onSearch(event: any) {
+    this.router.navigate(['delovi']);
   }
 
 }

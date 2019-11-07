@@ -28,9 +28,16 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bs-stepper/dist/css/bs-stepper.min.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/popper.js/dist/umd/popper.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./node_modules/bs-stepper/dist/js/bs-stepper.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -93,16 +100,9 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "./node_modules/bs-stepper/dist/css/bs-stepper.min.css",
               "src/styles.scss"
-            ],
-            "scripts": [
-              "./node_modules/jquery/dist/jquery.min.js",
-              "./node_modules/popper.js/dist/umd/popper.min.js",
-              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "./node_modules/bs-stepper/dist/js/bs-stepper.min.js"
-            ]
+              ],
+            "scripts": []
           }
         },
         "lint": {

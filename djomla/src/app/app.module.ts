@@ -10,6 +10,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { PocetnaComponent } from './components/pocetna/pocetna.component';
 import { PretrazivacComponent } from './components/pretrazivac/pretrazivac.component';
+import { DeloviComponent } from './components/delovi/delovi.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { PretrazivacComponent } from './components/pretrazivac/pretrazivac.compo
     NavbarComponent,
     PaginationComponent,
     PocetnaComponent,
-    PretrazivacComponent
+    PretrazivacComponent,
+    DeloviComponent
   ],
   imports: [
     BrowserModule,
