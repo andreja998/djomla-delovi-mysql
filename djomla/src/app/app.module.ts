@@ -11,6 +11,7 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { PocetnaComponent } from './components/pocetna/pocetna.component';
 import { PretrazivacComponent } from './components/pretrazivac/pretrazivac.component';
 import { DeloviComponent } from './components/delovi/delovi.component';
+import { DeloviDetailsComponent } from './components/delovi-details/delovi-details.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { DeloviComponent } from './components/delovi/delovi.component';
     PaginationComponent,
     PocetnaComponent,
     PretrazivacComponent,
-    DeloviComponent
+    DeloviComponent,
+    DeloviDetailsComponent
   ],
   imports: [
     BrowserModule,
