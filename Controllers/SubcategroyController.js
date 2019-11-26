@@ -7,15 +7,45 @@ exports.createSubcategory = (req, res) => {
     pool.getConnection((error, connection) => {
         if (error) res.status(500).json({ message: `Error while getting new connection from pool:\n--->`, error: error });
 
-        connection.query("INSERT INTO `SUBCATEGORY` (`SUBCATEGORY_NAME`) VALUES (?)", [req.body.subcategory_name], (error) => {
-            if (error) {
-                res.status(500).json({ message: `Something went wrong with our app or servers:\n--->`, error: error });
-            }
-            else {
-                res.status(201).json({ message: `Subcategory ${req.body.subcategory_name} is successfully added.` });
-            }
+        connection.beginTransaction((error) => {
+            if (error) res.status(500).json({ message: `Error while starting transaction:\n--->`, error: error });
+
+            let greske = { message: String, error: String };
+            let lastInsertId;
+            let categoryID = req.body.category_id;
+
+            connection.query("INSERT INTO `SUBCATEGORY` (`SUBCATEGORY_NAME`) VALUES (?)", [req.body.subcategory_name], (error, result) => {
+                if (error) {
+                    return connection.rollback(() => {
+                        greske = { message: `Error while inserting into SUBCATEGORY:\n--->`, error: error };
+                        return res.status(500).json(greske);
+                    });
+                }
+
+                lastInsertId = result.insertId;
+
+                connection.query("INSERT INTO `CATEGORY_SUBCATEGORY` (`CATEGORY_ID`, `SUBCATEGORY_ID`) VALUES (?, ?)", [categoryID, lastInsertId], (error) => {
+                    if (error) {
+                        return connection.rollback(() => {
+                            greske = { message: `Error while inserting into CATEGORY_SUBCATEGORY:\n--->`, error: error };
+                            return res.status(500).json(greske);
+                        });
+                    }
+
+                    connection.commit((error) => {
+                        if (error) {
+                            return connection.rollback(() => {
+                                greske = { message: `Error while commiting:\n--->`, error: error };
+                                return res.status(500).json(greske);
+                            });
+                        }
+                        connection.release();
+                        res.status(200).json({ message: "Successfully added new Subcategroy" });
+                    });
+                });
+
+            });
         });
-        connection.release();
     });
 }
 

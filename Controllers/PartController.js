@@ -12,12 +12,12 @@ exports.createPart = (req, res) => {
 
             let lastInsertedId;
             let c_sc_id;
-            let greske = '';
+            let greske = { message: String, error: String };
 
             connection.query("INSERT INTO `PART` (`PART_NAME`, `PART_PRICE`, `PART_DESC`) VALUES (?, ?, ?)", [req.body.part_name, req.body.part_price, req.body.part_desc], (error, result) => {
                 if (error) {
                     return connection.rollback(() => {
-                        greske += { message: `Error while inserting into PART:\n--->`, error: error };
+                        greske = { message: `Error while inserting into PART:\n--->`, error: error };
                         return res.status(500).json(greske);
                     });
                 }
@@ -27,7 +27,7 @@ exports.createPart = (req, res) => {
                 connection.query("SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?", [req.body.category_id, req.body.subcategory_id], (error, result) => {
                     if (error) {
                         return connection.rollback(() => {
-                            greske += { message: `Error while reading from CATEGORY_SUBCATEGORY_ID:\n--->`, error: error };
+                            greske = { message: `Error while reading from CATEGORY_SUBCATEGORY_ID:\n--->`, error: error };
                             return res.status(500).json(greske);
                         });
                     }
@@ -36,20 +36,21 @@ exports.createPart = (req, res) => {
                         c_sc_id = result[0]['CATEGORY_SUBCATEGORY_ID'];
                         throw `Doslo je do greske pri dodeljivanju vrednosti promenljivoj c_sc_id`;
                     } catch (error) {
-                        greske += { message: `Error while initializing variable c_sc_id:\n--->`, error: error };
+                        greske = { message: `Error while initializing variable c_sc_id:\n--->`, error: error };
                     }
 
                     connection.query("INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)", [c_sc_id, lastInsertedId, req.body.model_id], (error) => {
                         if (error) {
                             return connection.rollback(() => {
-                                greske += { message: `Error while inserting into PART_CATEGORY_SUBCATEGORY:\n--->`, error: error };
+                                greske = { message: `Error while inserting into PART_CATEGORY_SUBCATEGORY:\n--->`, error: error };
                                 return res.status(500).json(greske);
                             });
                         }
 
-                        connection.commit(function (error) {
+                        connection.commit((error) => {
                             if (error) {
                                 return connection.rollback(() => {
+                                    greske = { message: `Error while commiting:\n--->`, error: error }; z
                                     return res.status(500).json(greske);
                                 });
                             }
