@@ -5,15 +5,8 @@ var pool = mysql.createPool({
     host: 'localhost',
     user: 'djomla',
     password: 'djomla',
-    database: 'djomla'
-});
-
-pool.getConnection(function (err) {
-    if (!err) {
-        console.log('Database Connected');
-    } else {
-        throw err;
-    }
+    database: 'djomla',
+    multipleStatements: true
 });
 
 module.exports = pool;

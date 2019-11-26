@@ -2,76 +2,104 @@ const pool = require("../DB");
 
 //Controler for creating new Maker
 exports.createMaker = (req, res) => {
-    if (!req.body.maker_name) {
-        res.status(400).send({ error: true, message: "Please provide a valid info about maker" });
-    } else {
-        pool.query("INSERT INTO `MAKER` (`MAKER_NAME`) VALUES (?)", [req.body.maker_name], (err) => {
-            if (err) {
-                res.status(500).send(`Something went wrong with our app or servers:\n   ---> ${err}`);
+    if (!req.body.maker_name) return res.status(400).json({ error: "Please provide a valid data for new Maker" });
+
+    pool.getConnection((error, connection) => {
+        if (error) res.status(500).json({ message: `Error while getting new connection from pool:\n--->`, error: error });
+
+        connection.query("INSERT INTO `MAKER` (`MAKER_NAME`) VALUES (?)", [req.body.maker_name], (error) => {
+            if (error) {
+                res.status(500).json({ message: `Something went wrong with our app or servers:\n--->`, error: error });
             }
             else {
-                res.status(201).send(`Maker ${req.body.maker_name} is successfully added.`);
+                res.status(201).send({ message: `Maker ${req.body.maker_name} is successfully added.` });
             }
         });
-    }
+        connection.release();
+    });
 }
+
 
 //Controler for geting all Makers
 exports.getAllMakers = (req, res) => {
-    pool.query("select * from `MAKER`", (err, result) => {
-        if (err) {
-            res.status(500).send(`Something went wrong with our app or servers:\n   ---> ${err}`);
-        } else {
-            if (result.length <= 0) {
-                res.status(404).send(`No Makers found.`)
+    pool.getConnection((error, connection) => {
+        if (error) res.status(500).json({ message: `Error while getting new connection from pool:\n--->`, error: error });
+
+        connection.query("select * from `MAKER`", (error, result) => {
+            if (error) {
+                res.status(500).json({ message: `Something went wrong with our app or servers:\n--->`, error: error });
             } else {
-                res.status(200).json(result);
+                if (result.length <= 0) {
+                    res.status(200).send({ message: `No Makers found.` });
+                } else {
+                    res.status(200).json(result);
+                }
             }
-        }
+        });
+        connection.release();
     });
 }
 
 //Controler for geting one Maker
 exports.getOneMaker = (req, res) => {
-    pool.query("select * from `MAKER` where `MAKER_ID` = ?", [req.params.maker_id], (err, result) => {
-        if (err) {
-            res.status(500).send(`Something went wrong with our app or servers:\n   ---> ${err}`);
-        } else {
-            if (result.length <= 0) {
-                res.status(404).send("Maker is not found.");
+    pool.getConnection((error, connection) => {
+        if (error) res.status(500).json({ message: `Error while getting new connection from pool:\n--->`, error: error });
+
+        connection.query("select * from `MAKER` where `MAKER_ID` = ?", [req.params.maker_id], (error, result) => {
+            if (error) {
+                res.status(500).json({ message: `Something went wrong with our app or servers:\n--->`, error: error });
             } else {
-                res.status(200).json(result);
+                if (result.length <= 0) {
+                    res.status(200).send({ message: "Maker is not found." });
+                } else {
+                    res.status(200).json(result);
+                }
             }
-        }
+        });
+        connection.release();
     });
 }
 
 //Controler for updating one Maker
 exports.updateOneMaker = (req, res) => {
-    pool.query("UPDATE `MAKER` SET `MAKER_NAME` = ? WHERE `MAKER`.`MAKER_ID` = ?", [req.body.maker_name, req.body.maker_id], (err, result) => {
-        if (err) {
-            res.status(500).send(`Something went wrong with our app or servers:\n   ---> ${err}`);
-        } else {
-            if (result.affectedRows == 0) {
-                res.status(404).send("Maker is not found.");
+    if (!req.body.maker_name, !req.body.maker_id) return res.status(400).json({ message: "Please provide a valid data for updating Maker" });
+
+    pool.getConnection((error, connection) => {
+        if (error) res.status(500).json({ message: `Error while getting new connection from pool:\n--->`, error: error });
+
+        connection.query("UPDATE `MAKER` SET `MAKER_NAME` = ? WHERE `MAKER`.`MAKER_ID` = ?", [req.body.maker_name, req.body.maker_id], (error, result) => {
+            if (error) {
+                res.status(500).json({ message: `Something went wrong with our app or servers:\n--->`, error: error });
             } else {
-                res.status(201).send(`Maker is successfully updatet to ${req.body.maker_name}.\n` + result.message);
+                if (result.affectedRows == 0) {
+                    res.status(200).send({ message: "Maker is not found." });
+                } else {
+                    res.status(201).send({ message: `Maker with id=${req.body.maker_id} successfully updated to ${req.body.maker_name}.` });
+                }
             }
-        }
+        });
+        connection.release();
     });
 }
 
 //Controler for deleting one Maker
 exports.deleteOneMaker = (req, res) => {
-    pool.query("DELETE FROM `MAKER` WHERE `MAKER`.`MAKER_ID` = ?", [req.body.maker_id], (err, result) => {
-        if (err) {
-            res.status(500).send(`Something went wrong with our app or servers:\n   ---> ${err, result}`);
-        } else {
-            if (result.affectedRows == 0) {
-                res.status(404).send("Model is not found.");
+    if (!req.body.maker_id) return res.status(400).json({ message: "Please provide a valid data for updating Maker" });
+
+    pool.getConnection((error, connection) => {
+        if (error) res.status(500).json({ message: `Error while getting new connection from pool:\n--->`, error: error });
+
+        connection.query("DELETE FROM `MAKER` WHERE `MAKER`.`MAKER_ID` = ?", [req.body.maker_id], (error, result) => {
+            if (error) {
+                res.status(500).json({ message: `Something went wrong with our app or servers:\n--->`, error: error });
             } else {
-                res.status(200).send(`Maker with id: ${req.body.maker_id} is successfully deleted.`);
+                if (result.affectedRows == 0) {
+                    res.status(200).send({ message: "Model is not found." });
+                } else {
+                    res.status(200).send({ message: `Maker with id: ${req.body.maker_id} is successfully deleted.` });
+                }
             }
-        }
+        });
+        connection.release();
     });
 }

@@ -9,6 +9,7 @@ const modelRoutes = require('./Routes/ModelRoutes');
 const categoryRoutes = require('./Routes/CategoryRoutes');
 const subcategoryRoutes = require('./Routes/SubcategoryRoutes');
 const partRoutes = require('./Routes/PartRoutes');
+const otherRoutes = require('./Routes/OtherRoutes');
 
 const app = express(); // Inicijalizacija app
 
@@ -27,6 +28,7 @@ app.use('/api/model', modelRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/subcategory', subcategoryRoutes);
 app.use('/api/part', partRoutes);
+app.use('/api/other', otherRoutes);
 // app.use('/api/auth', userRoutes);
 // app.use('/images', express.static(path.join(__dirname, 'images')));
 
