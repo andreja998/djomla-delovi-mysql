@@ -4,6 +4,7 @@ const router = express.Router();
 const otherControler = require('../Controllers/OtherControllers');
 
 
-router.post('/', otherControler.getParts);
+router.post('/getAllPArts', otherControler.getParts);
+router.post('/getOnePart', otherControler.getPartEverything);
 
 module.exports = router;
