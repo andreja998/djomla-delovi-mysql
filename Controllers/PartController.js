@@ -1,4 +1,79 @@
+const path = require("path");
+const fs = require('fs');
+
 const pool = require("../DB");
+const upload = require('../Middleware/multer');
+
+//Controler for displaing form for inserting photos
+exports.home = (req, res) => {
+    return res.sendFile(path.join(`${__dirname}/../views/index.html`));
+};
+
+//Controler for uploading images
+exports.multipleUpload = async (req, res) => {
+    try {
+        await upload(req, res);
+        console.log(req.files);
+
+        if (req.files.length <= 0) {
+            return res.send(`You must select at least 1 file.`);
+        }
+
+        let greske;
+
+        pool.getConnection((error, connection) => {
+            if (error) res.status(500).json({ message: `Error while getting new connection from pool`, error: error });
+
+            connection.beginTransaction((error) => {
+                if (error) res.status(500).json({ message: `Error while starting transaction`, error: error });
+
+                let part_id = 1;
+
+                for (let i = 0; i < req.files.length; i++) {
+                    connection.query("INSERT INTO `PICTURE` (`PICTURE_DEST`, `PART_ID`) VALUES (?,?);", [req.files[i].path, part_id], (error, result) => {
+                        if (error) {
+                            return connection.rollback(() => {
+                                greske = { message: "Error inserting images", error: error };
+                            });
+                        }
+                    });
+                }
+
+                connection.commit((error) => {
+                    if (error) {
+                        return connection.rollback(() => {
+
+                            //Kod za brisanje slika
+                            for (let i = 0; i < req.files.length; i++) {
+                                try {
+                                    fs.unlinkSync(req.files[i].path);
+                                    //file removed
+                                } catch (err) {
+                                    console.error(err);
+                                }
+                            }
+
+                            greske = { message: `Error while commiting`, error: error };
+                            return res.status(500).json(greske);
+                        });
+                    }
+                    connection.release();
+                    res.status(200).json({ message: "Successfully added new Images" });
+                });
+            });
+        });
+
+        // return res.send(`Files has been uploaded.`);
+    } catch (error) {
+        console.log(error);
+
+        if (error.code === "LIMIT_UNEXPECTED_FILE") {
+            return res.send("Too many files to upload.");
+        }
+        return res.send(`Error when trying upload many files: ${error}`);
+    }
+};
+
 
 //Controler for creating new Part
 exports.createPart = (req, res) => {

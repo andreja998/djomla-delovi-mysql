@@ -13,6 +13,7 @@ const otherRoutes = require('./Routes/OtherRoutes');
 
 const app = express(); // Inicijalizacija app
 
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // CORS
