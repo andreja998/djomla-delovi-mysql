@@ -1,0 +1,271 @@
+-- phpMyAdmin SQL Dump
+-- version 5.0.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Dec 28, 2019 at 04:19 PM
+-- Server version: 10.3.17-MariaDB
+-- PHP Version: 7.2.11
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `djomla`
+--
+CREATE DATABASE IF NOT EXISTS `djomla` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `djomla`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CATEGORY`
+--
+
+DROP TABLE IF EXISTS `CATEGORY`;
+CREATE TABLE IF NOT EXISTS `CATEGORY` (
+  `CATEGORY_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `CATEGORY_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`CATEGORY_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `CATEGORY`
+--
+
+INSERT INTO `CATEGORY` (`CATEGORY_ID`, `CATEGORY_NAME`) VALUES
+(4, 'Kočioni sistem');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CATEGORY_SUBCATEGORY`
+--
+
+DROP TABLE IF EXISTS `CATEGORY_SUBCATEGORY`;
+CREATE TABLE IF NOT EXISTS `CATEGORY_SUBCATEGORY` (
+  `CATEGORY_SUBCATEGORY_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `CATEGORY_ID` int(11) DEFAULT NULL,
+  `SUBCATEGORY_ID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`CATEGORY_SUBCATEGORY_ID`),
+  KEY `FK_CATEGORY_CATEGORY__CATEGORY` (`CATEGORY_ID`),
+  KEY `FK_CATEGORY_SUBCATEGO_SUBCATEG` (`SUBCATEGORY_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `CATEGORY_SUBCATEGORY`
+--
+
+INSERT INTO `CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `CATEGORY_ID`, `SUBCATEGORY_ID`) VALUES
+(8, NULL, NULL),
+(9, 4, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MAKER`
+--
+
+DROP TABLE IF EXISTS `MAKER`;
+CREATE TABLE IF NOT EXISTS `MAKER` (
+  `MAKER_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MAKER_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`MAKER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `MAKER`
+--
+
+INSERT INTO `MAKER` (`MAKER_ID`, `MAKER_NAME`) VALUES
+(1, 'Merceds'),
+(2, 'Audi'),
+(3, 'Fiat');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MODEL`
+--
+
+DROP TABLE IF EXISTS `MODEL`;
+CREATE TABLE IF NOT EXISTS `MODEL` (
+  `MODEL_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MAKER_ID` int(11) NOT NULL,
+  `MODEL_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`MODEL_ID`),
+  KEY `FK_MODEL_MAKER_HAV_MAKER` (`MAKER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `MODEL`
+--
+
+INSERT INTO `MODEL` (`MODEL_ID`, `MAKER_ID`, `MODEL_NAME`) VALUES
+(1, 1, 'G500 AMG'),
+(2, 1, 'S500'),
+(3, 2, 'S5'),
+(4, 2, 'S7'),
+(5, 3, 'Stilo'),
+(6, 3, 'Palio');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `PART`
+--
+
+DROP TABLE IF EXISTS `PART`;
+CREATE TABLE IF NOT EXISTS `PART` (
+  `PART_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `PART_NAME` varchar(255) NOT NULL,
+  `PART_PRICE` varchar(64) NOT NULL,
+  `PART_DESC` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`PART_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `PART`
+--
+
+INSERT INTO `PART` (`PART_ID`, `PART_NAME`, `PART_PRICE`, `PART_DESC`) VALUES
+(1, 'asd', '123', 'asd\r\n'),
+(2, 'qwe', '678', 'qwe');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `PART_CATEGORY_SUBCATEGORY`
+--
+
+DROP TABLE IF EXISTS `PART_CATEGORY_SUBCATEGORY`;
+CREATE TABLE IF NOT EXISTS `PART_CATEGORY_SUBCATEGORY` (
+  `P_C_SC_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `CATEGORY_SUBCATEGORY_ID` int(11) DEFAULT NULL,
+  `PART_ID` int(11) DEFAULT NULL,
+  `MODEL_ID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`P_C_SC_ID`),
+  KEY `FK_PART_CAT_CATEGORY__CATEGORY` (`CATEGORY_SUBCATEGORY_ID`),
+  KEY `FK_PART_CAT_MODEL_THA_MODEL` (`MODEL_ID`),
+  KEY `FK_PART_CAT_PART_PART` (`PART_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `PART_CATEGORY_SUBCATEGORY`
+--
+
+INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`P_C_SC_ID`, `CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES
+(4, 8, 1, 1),
+(5, 9, 2, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `PICTURE`
+--
+
+DROP TABLE IF EXISTS `PICTURE`;
+CREATE TABLE IF NOT EXISTS `PICTURE` (
+  `PICTURE_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `PICTURE_DEST` varchar(1024) NOT NULL,
+  `PART_ID` int(11) NOT NULL,
+  PRIMARY KEY (`PICTURE_ID`),
+  KEY `PICTURE_PART_PART_ID_fk` (`PART_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `PICTURE`
+--
+
+INSERT INTO `PICTURE` (`PICTURE_ID`, `PICTURE_DEST`, `PART_ID`) VALUES
+(7, '/home/nemanja/Projects/djomla-delovi-mysql/Images/1577542936735_laser_beams-wallpaper-1920x1080.jpg', 1),
+(8, '/home/nemanja/Projects/djomla-delovi-mysql/Images/1577542936740_milky_way_night_sky-wallpaper-1920x1080.jpg', 1),
+(9, '/home/nemanja/Projects/djomla-delovi-mysql/Images/1577542936761_razer_chroma_crystals_background-wallpaper-1920x1080.jpg', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SUBCATEGORY`
+--
+
+DROP TABLE IF EXISTS `SUBCATEGORY`;
+CREATE TABLE IF NOT EXISTS `SUBCATEGORY` (
+  `SUBCATEGORY_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `SUBCATEGORY_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`SUBCATEGORY_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `SUBCATEGORY`
+--
+
+INSERT INTO `SUBCATEGORY` (`SUBCATEGORY_ID`, `SUBCATEGORY_NAME`) VALUES
+(6, 'ABS'),
+(9, 'Kocaje');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `USER`
+--
+
+DROP TABLE IF EXISTS `USER`;
+CREATE TABLE IF NOT EXISTS `USER` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8_bin NOT NULL,
+  `password` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `USER`
+--
+
+INSERT INTO `USER` (`id`, `username`, `password`) VALUES
+(1, 'admin', '$2a$10$o6RpCVguyaEYc3CzZ//P/.1p10EOT4ceDC8qPKxFoYmirk/M4j2P2'),
+(2, 'andreja', 'parkour');
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `CATEGORY_SUBCATEGORY`
+--
+ALTER TABLE `CATEGORY_SUBCATEGORY`
+  ADD CONSTRAINT `FK_CATEGORY_CATEGORY__CATEGORY` FOREIGN KEY (`CATEGORY_ID`) REFERENCES `CATEGORY` (`CATEGORY_ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_CATEGORY_SUBCATEGO_SUBCATEG` FOREIGN KEY (`SUBCATEGORY_ID`) REFERENCES `SUBCATEGORY` (`SUBCATEGORY_ID`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `MODEL`
+--
+ALTER TABLE `MODEL`
+  ADD CONSTRAINT `FK_MODEL_MAKER_HAV_MAKER` FOREIGN KEY (`MAKER_ID`) REFERENCES `MAKER` (`MAKER_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `PART_CATEGORY_SUBCATEGORY`
+--
+ALTER TABLE `PART_CATEGORY_SUBCATEGORY`
+  ADD CONSTRAINT `FK_PART_CAT_CATEGORY__CATEGORY` FOREIGN KEY (`CATEGORY_SUBCATEGORY_ID`) REFERENCES `CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_PART_CAT_MODEL_THA_MODEL` FOREIGN KEY (`MODEL_ID`) REFERENCES `MODEL` (`MODEL_ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_PART_CAT_PART_PART` FOREIGN KEY (`PART_ID`) REFERENCES `PART` (`PART_ID`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `PICTURE`
+--
+ALTER TABLE `PICTURE`
+  ADD CONSTRAINT `PICTURE_PART_PART_ID_fk` FOREIGN KEY (`PART_ID`) REFERENCES `PART` (`PART_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
