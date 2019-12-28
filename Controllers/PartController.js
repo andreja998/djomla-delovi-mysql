@@ -13,7 +13,7 @@ exports.home = (req, res) => {
 exports.multipleUpload = async (req, res) => {
     try {
         await upload(req, res);
-        console.log(req.files);
+        // console.log(req.files);
 
         if (req.files.length <= 0) {
             return res.send(`You must select at least 1 file.`);
@@ -27,39 +27,50 @@ exports.multipleUpload = async (req, res) => {
             connection.beginTransaction((error) => {
                 if (error) res.status(500).json({ message: `Error while starting transaction`, error: error });
 
+                // let part_id = req.part_id;
                 let part_id = 1;
+                let i = 0;
 
-                for (let i = 0; i < req.files.length; i++) {
-                    connection.query("INSERT INTO `PICTURE` (`PICTURE_DEST`, `PART_ID`) VALUES (?,?);", [req.files[i].path, part_id], (error, result) => {
-                        if (error) {
-                            return connection.rollback(() => {
-                                greske = { message: "Error inserting images", error: error };
-                            });
-                        }
-                    });
+                function addQuery(i) {
+                    if (i < req.files.length) {
+
+                        connection.query("INSERT INTO `PICTURE` (`PICTURE_DEST`, `PART_ID`) VALUES (?,?);", [req.files[i].path, part_id], (error, result) => {
+                            if (error) {
+                                return connection.rollback(() => {
+
+                                    //Kod za brisanje slika
+                                    for (let i = 0; i < req.files.length; i++) {
+                                        try {
+                                            fs.unlinkSync(req.files[i].path);
+                                            //file removed
+                                        } catch (err) {
+                                            console.error(err);
+                                        }
+                                    }
+                                    return res.status(500).json({ message: "Error inserting images", error: error });
+                                });
+                            }
+                            i++;
+                            if (i === req.files.length) {
+                                connection.commit((error) => {
+                                    if (error) {
+                                        return connection.rollback(() => {
+                                            return res.status(500).json({ message: `Error while commiting`, error: error });
+                                        });
+                                    }
+                                    connection.release();
+                                    return res.status(200).json({ message: "Successfully added new Images" });
+                                });
+                            } else {
+                                addQuery(i);
+                            }
+                        });
+                    } else {
+                    }
                 }
 
-                connection.commit((error) => {
-                    if (error) {
-                        return connection.rollback(() => {
+                addQuery(0);
 
-                            //Kod za brisanje slika
-                            for (let i = 0; i < req.files.length; i++) {
-                                try {
-                                    fs.unlinkSync(req.files[i].path);
-                                    //file removed
-                                } catch (err) {
-                                    console.error(err);
-                                }
-                            }
-
-                            greske = { message: `Error while commiting`, error: error };
-                            return res.status(500).json(greske);
-                        });
-                    }
-                    connection.release();
-                    res.status(200).json({ message: "Successfully added new Images" });
-                });
             });
         });
 
