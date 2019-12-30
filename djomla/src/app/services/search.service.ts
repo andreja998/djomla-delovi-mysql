@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
+import { SearchItem } from '../utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
   
-  public selectedCategory: string = null;
-  public selectedModel: string = null;
-  public selectedMark: string = null;
-  public selectedSubCategory: string = null;
+  public selectedCategory: number;
+  public selectedModel: number;
+  public selectedMark: number;
+  public selectedSubCategory: number;
 
   constructor() { }
 }

@@ -1,7 +1,79 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <app-pretrazivac [searchName]="searchName" [searchMode]="searchMode"></app-pretrazivac>
-        </div>
+<div class="container-fluid main-container p-0">
+  <div class="row m-0">
+    <div class="col-sm-12 m-0 p-0">
+      <app-pretrazivac
+        #pretrazivac
+        [searchName]="searchName"
+        [searchMode]="searchMode"
+        (search)="onSearch($event)"
+      ></app-pretrazivac>
     </div>
+  </div>
+  <div class="row pt-4 pl-4">
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="row">
+          <div
+            class="col-sm-12 content mb-2 p-2"
+            *ngFor="
+              let part of parts
+                | paginate
+                  : { id: 'paginacija', itemsPerPage: 10, currentPage: page }
+            "
+          >
+            <div class="container">
+              <div class="row">
+                <div class="col-md-4">
+                  <img src="part.imgUrl" alt="Image" class="img-fluid" />
+                </div>
+                <div class="col-md-8 clearfix">
+                  <h4 class="text-capitalize font-weight-bold">
+                    {{ part.name }}
+                  </h4>
+                  <p class="lead">
+                    {{ part.subTitle }}
+                  </p>
+                  <p class="small color-primary-4 mb-1">Marka: {{ part.mark }}</p>
+                  <p class="small color-primary-4 mb-1">Model: {{ part.model }}</p>
+                  <p class="small color-primary-4 mb-1">
+                    Kategorija: {{ part.category }}
+                  </p>
+                  <p class="small color-primary-4">
+                    Potkategorija: {{ part.subCategory }}
+                  </p>
+                  <div class="cena justify-content-center clearfix">
+                    <h4 class="text-success float-left mt-2">$20.5</h4>
+                    <a
+                      href="javascript:void(0);"
+                      (click)="onPartClick(part.id)"
+                      class="btn bg-color-complement-2 btn-lg active dugme float-right"
+                      role="button"
+                      aria-pressed="true"
+                      >Pogledajte</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <pagination-controls
+              id="paginacija"
+              maxSize="10"
+              directionLinks="true"
+              (pageChange)="onChange($event)"
+            ></pagination-controls>
+            <!-- asd
+            <app-pagination
+              [items]="parts"
+              [initialPage]="currentPage"
+              (changePage)="onChangePage($event)"
+            ></app-pagination> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

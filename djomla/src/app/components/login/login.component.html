@@ -1,0 +1,107 @@
+<!-- <div class="login-container">
+  <form class="login-form bg-color-primary-4" [formGroup]="loginForm">
+    <label> Username: </label>
+    <input type="text" formControlName="username" />
+
+    <label> Password:</label>
+    <input type="password" formControlName="password" />
+  </form>
+</div> -->
+<div class="login-container">
+  <div class="page-wrap">
+    <div class="logo-section">
+      <img
+        src="http://www.clker.com/cliparts/b/f/j/P/w/j/purple-flame-logo-2-hi.png"
+        alt=""
+        class="logo"
+      />
+      <h1>Djomla</h1>
+    </div>
+    <div class="login-section">
+      <h1>Prijavite se</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="signInForm">
+        <div class="form-group">
+          <!-- <label for="username">Username</label> -->
+          <input
+            type="text"
+            id="username"
+            class="input-control"
+            placeholder="Username"
+            formControlName="username"
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="input-control"
+            placeholder="Password"
+            formControlName="password"
+          />
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn-login">Prijavite se</button>
+        </div>
+      </form>
+  
+      <form action="#" class="signUpForm hidden">
+        <div class="form-group">
+          <label for="username">Name</label>
+          <input
+            type="text"
+            id="username"
+            class="input-control"
+            placeholder="Name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="input-control"
+            placeholder="Username"
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Email</label>
+          <input
+            type="text"
+            id="email"
+            class="input-control"
+            placeholder="Email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="input-control"
+            placeholder="Password"
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Re-type Password</label>
+          <input
+            type="password"
+            id="password"
+            class="input-control"
+            placeholder="Re-type Password"
+          />
+        </div>
+        <div class="form-group">
+          <button class="btn-login">Sign Up</button>
+        </div>
+      </form>
+      <p class="pConent signUpText">
+        Nemate nalog? <a href="#" id="SignUpbtn">Registrujte se</a>
+      </p>
+      <p class="pConent signInText hidden">
+        Already Registered? <a href="#" id="SignInbtn">Sign In</a>
+      </p>
+    </div>
+  </div>
+</div>
+

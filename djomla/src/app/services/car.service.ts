@@ -8,31 +8,36 @@ import { SearchItem, Part } from "../utils";
   providedIn: "root"
 })
 export class CarService {
+  public currentPage: Observable<number>;
+  public name: string;
   constructor(private http: HttpClient) {}
 
   getMarks(): Observable<SearchItem[]> {
-    return this.http.get("https://reqres.in/api/users?page=2", {}).pipe(
-      map((res: Response) => {
-        console.log(res["data"].length);
+    return this.http.get("http://localhost:3000/api/maker", {}).pipe(
+      map((res: Array<any>) => {
+        console.log(res);
+
         const marks: SearchItem[] = [];
-        marks.push(new SearchItem("Opel"));
-        marks.push(new SearchItem("BMW"));
+        marks.push(new SearchItem("Opel", 1));
+        marks.push(new SearchItem("BMW", 2));
 
         return marks;
       })
     );
   }
 
-  getModels(mark: string): Observable<SearchItem[]> {
+  getModels(markId: number): Observable<SearchItem[]> {
+    const obj = {};
+    obj["maker_id"] = markId;
     return this.http.get("https://reqres.in/api/users?page=1", {}).pipe(
       map((res: Response) => {
         const models: SearchItem[] = [];
-        if (mark === "Opel") {
-          models.push(new SearchItem("Astra"));
-          models.push(new SearchItem("Corsa"));
+        if (markId === 1) {
+          models.push(new SearchItem("Astra", 1));
+          models.push(new SearchItem("Corsa", 2));
         } else {
-          models.push(new SearchItem("320 D"));
-          models.push(new SearchItem("318 D"));
+          models.push(new SearchItem("320 D", 3));
+          models.push(new SearchItem("318 D", 4));
         }
 
         return models;
@@ -51,14 +56,15 @@ export class CarService {
           for (let i = 11; i < 30; i++) {
             parts.push(
               new Part(
+                i,
                 i.toString(),
-                i.toString(),
+                "Podnaslov - Stavka, Nesto, Svasta, Primer, Teksta Koji Moze Da Stoji Ovde",
                 "hbxcmvxmcbvxcv",
                 "4299 din",
                 "Opel",
                 "Corsa",
                 "Kat1",
-                ["sub1", "sub2"]
+                "Sub" + i.toString()
               )
             );
           }
@@ -69,12 +75,32 @@ export class CarService {
   }
 
   getPartsByModel(
-    model: string,
-    mark: string,
-    category?: string,
-    subCat?: string
+    modelId: number,
+    markId: number,
+    categoryId?: number,
+    subCatId?: number,
+    fromNumber?: number,
+    sizeNumber?: number
   ): Observable<Part[]> {
-    let jsonToSend = { mark, model, category, subCat };
+    let jsonToSend = {};
+    let queryToCall = 0;
+    if (markId != undefined) {
+      jsonToSend["maker_id"] = markId;
+      queryToCall++;
+    }
+    if (modelId != undefined) {
+      jsonToSend["model_id"] = modelId;
+      queryToCall++;
+    }
+    if (categoryId != undefined) {
+      jsonToSend["category_id"] = categoryId;
+      queryToCall++;
+    }
+    if (subCatId != undefined) {
+      jsonToSend["subcategory_id"] = subCatId;
+      queryToCall++;
+    }
+
     console.log(jsonToSend);
     return this.http
       .post("https://reqres.in/api/users?page=2", jsonToSend)
@@ -84,14 +110,15 @@ export class CarService {
           for (let i = 0; i < 5000; i++) {
             parts.push(
               new Part(
-                i.toString(),
-                i.toString(),
+                i,
+                "Delovi za BMW Serija 3" + i.toString(),
+                "Podnaslov - Stavka, Nesto, Svasta, Primer, Teksta Koji Moze Da Stoji Ovde",
                 "asdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfs",
                 "1550 din",
                 "Opel",
                 "Astra",
                 "Kat1",
-                ["sub1", "sub2"]
+                "Sub" + i.toString()
               )
             );
           }
@@ -101,18 +128,33 @@ export class CarService {
       );
   }
 
-  getPart(partId: number): Observable<Object> {
-    let part = {};
-
-    return of(part);
+  getPart(partId: number): Observable<Part> {
+    return this.http
+      .post("https://reqres.in/api/users?page=2", { part_id: partId })
+      .pipe(
+        map((res: Response) => {
+          let part = new Part(
+            1,
+            "Moj Deo Ovde Naslov",
+            "Podnaslov - Stavka, Nesto, Svasta, Primer, Teksta Koji Moze Da Stoji Ovde",
+            "asdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfs",
+            "1550 din",
+            "Opel",
+            "Astra",
+            "Kat1",
+            "Sub"
+          );
+          return part;
+        })
+      );
   }
 
-  getCategories(model?: string, mark?: string): Observable<SearchItem[]> {
+  getCategories(): Observable<SearchItem[]> {
     return this.http.get("https://reqres.in/api/users?page=2", {}).pipe(
       map((res: Response) => {
         const categories: SearchItem[] = [];
         for (let i = 0; i < 20; i++) {
-          categories.push(new SearchItem("Kategorija " + i));
+          categories.push(new SearchItem("Kategorija " + i, i));
         }
 
         return categories;
@@ -120,17 +162,80 @@ export class CarService {
     );
   }
 
-  getSubCategories(category?: string): Observable<SearchItem[]> {
-    return this.http.get("https://reqres.in/api/users?page=2", {}).pipe(
-      map((res: Response) => {
-        const categories: SearchItem[] = [];
-        for (let i = 16; i < 31; i++) {
-          categories.push(new SearchItem("Potkategorija " + i));
-        }
-
-        return categories;
+  updateCategory(category: SearchItem) {
+    return this.http
+      .post("https://reqres.in/api/users?page=2", {
+        category_id: category.id,
+        new_name: category.name
       })
-    );
+      .pipe(map(res => {}));
+  }
+
+  removeCategory(id: number): Observable<string> {
+    return this.http
+      .post("https://reqres.in/api/users?page=2", { category_id: id })
+      .pipe(
+        map(
+          res => {
+            res = "Uspesno dodato";
+            return res.toString();
+          },
+          err => {}
+        )
+      );
+  }
+
+  getSubCategories(categoryId: number): Observable<SearchItem[]> {
+    return this.http
+      .post("https://reqres.in/api/users?page=2", { category_id: categoryId })
+      .pipe(
+        map((res: Response) => {
+          const categories: SearchItem[] = [];
+          for (let i = 16; i < 31; i++) {
+            categories.push(new SearchItem("Potkategorija " + i, i));
+          }
+
+          return categories;
+        })
+      );
+  }
+
+  updateSubCategory(
+    category: SearchItem,
+    subCategory: SearchItem
+  ): Observable<any> {
+    return this.http
+      .post("https://reqres.in/api/users?page=2", {
+        category_id: category.id,
+        subcategory_id: subCategory.id,
+        subcategory_name: subCategory.name
+      })
+      .pipe(map((res: Response) => {}));
+  }
+
+  createSubCategory(subCategoryName: string, category: SearchItem): Observable<SearchItem> {
+    return this.http.post("https://reqres.in/api/users?page=2", { subcategory_name: subCategoryName, category_id: category.id }).
+    pipe(map((res: Response) => {
+      console.log(res);
+      
+      const subCategory = new SearchItem('ime', 213);
+      return subCategory;
+    }));
+  }
+
+  getImagesById(partId: number): Observable<string[]> {
+    return this.http
+      .post("https://reqres.in/api/users?page=2", { part_id: partId })
+      .pipe(
+        map((res: Response) => {
+          const images = [];
+          for (let i = 0; i < 5; i++) {
+            images.push("assets/images/Pocetna.png");
+          }
+
+          return images;
+        })
+      );
   }
 
   createPart(part: Object): Observable<any> {
@@ -154,6 +259,10 @@ export class CarService {
   }
 
   createMark(name: string): Observable<any> {
+    return of(undefined);
+  }
+
+  createCategory(name: string): Observable<any> {
     return of(undefined);
   }
 }

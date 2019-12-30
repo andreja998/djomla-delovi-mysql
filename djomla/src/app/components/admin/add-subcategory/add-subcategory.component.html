@@ -1,0 +1,87 @@
+<div class="container main-container">
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form category-choser" [formGroup]="chooseCategory">
+        <div class="wrapper">
+          <h3 class="title">Izaberite kategoriju</h3>
+          <div class="content">
+            <ng-select [items]="categories" bindLabel="name" placeholder="izaberite kategoriju" formControlName="category" class="custom"></ng-select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-lg-6">
+      <form class="form" [formGroup]="addSubCategoryF" (ngSubmit)="addSubCategory()">
+        <div class="wrapper">
+          <h3 class="title">Dodajte potkategoriju</h3>
+          <div class="content">
+            <input type="text" class="input-control" placeholder="naziv potkategorije" formControlName="subCategoryName" />
+            <button class="btn-success" [disabled]="addSubCategoryF.invalid || chooseCategory.invalid" type="submit">
+              Dodaj
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-12 col-lg-6">
+      <form [formGroup]="removeSubCategoryF" (ngSubmit)="removeSubCategory()">
+        <div class="wrapper">
+          <h3 class="title">Uklonite potkategoriju</h3>
+          <div class="content">
+            <ng-select [items]="subCategories" bindLabel="name" placeholder="tražite potkategoriju" formControlName="subCategory" class="custom"></ng-select>
+            <button class="btn-danger" [disabled]="removeSubCategoryF.invalid || chooseCategory.invalid" type="submit">
+              Ukloni
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-12 col-lg-6">
+      <form [formGroup]="updateSubCategoryF" (ngSubmit)="updateSubCategory()">
+        <div class="wrapper update-content">
+          <h3 class="title">Promenite naziv</h3>
+          <div class="my-row update-select">
+            <ng-select
+              [items]="subCategories"
+              bindLabel="name"
+              placeholder="trazite potkategoriju"
+              formControlName="subCategory"
+              class="custom update-input mb-2"
+            ></ng-select>
+          </div>
+          <div class="my-row no-wrap">
+            <input type="text" class="input-control" placeholder="naziv potkategorije" formControlName="subCategoryName" />
+            <button [disabled]="updateSubCategoryF.invalid || chooseCategory.invalid" type="submit" class="btn-warning">
+              Promeni
+            </button>
+          </div>
+          <div
+            *ngIf="
+              updateSubCategoryF.get('subCategoryName').invalid &&
+              (updateSubCategoryF.get('subCategoryName').dirty || updateSubCategoryF.get('subCategoryName').touched)
+            "
+            class="alert alert-danger mt-3"
+          >
+            <div class="my-column">
+              <h6>Morate uneti naziv potkategorije</h6>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-12 mb-4">
+      <div class="wrapper read-section">
+        <div class="container">
+          <h3 class="title text-left ml-0">Lista potkategorija</h3>
+          <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-3 pl-1 pr-1 text-center" *ngFor="let subCategory of subCategories">
+              <h5 class="category-name pt-2 pb-2">{{ subCategory.name }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

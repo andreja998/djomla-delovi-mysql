@@ -1,142 +1,182 @@
-<div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="search-container">
-          <h1>{{ searchName }}</h1>
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-6">
-                  <ng-select
-                  [items]="marks"
-                  bindValue="name"
-                  bindLabel="name"
-                  [(ngModel)]="selectedMark"
-                  (change)="onMarkChange($event)"
-                  placeholder="Izaberite marku"
-                  class=""
-                >
-                </ng-select>
-              </div>
-              <div class="col-md-6">
-                  <ng-select
-                  [items]="models"
-                  bindValue="name"
-                  bindLabel="name"
-                  [(ngModel)]="selectedModel"
-                  (change)="onModelChange($event)"
-                  placeholder="Izaberite model"
-                ></ng-select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-          <div class="container">
-              <div class="row">
-                <div class="col-sm-3 mr-auto">
-                  <a
-                    class="btn btn-primary btn-lg"
-                    role="button"
-                    href="JavaScript:void(0)"
-                    (click)="onSearch()"
-                    [class.disabled]="searchDisabled"
-                    >Pretražite</a
-                  >
-                </div>
-              </div>
-            </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-          <div
-          *ngIf="searchMode == 'detailed'"
-          id="search-stepper"
-          class="bs-stepper"
-        >
-          <div class="bs-stepper-header" role="tablist">
-            <!-- your steps here -->
-            <div class="step" data-target="#logins-part">
-              <button
-                type="button"
-                class="step-trigger"
-                role="tab"
-                aria-controls="logins-part"
-                id="logins-part-trigger"
-              >
-                <span class="bs-stepper-circle">1</span>
-                <span class="bs-stepper-label">Kategorije</span>
-              </button>
-            </div>
-            <div class="line"></div>
-            <div class="step" data-target="#information-part">
-              <button
-                type="button"
-                class="step-trigger"
-                role="tab"
-                aria-controls="information-part"
-                id="information-part-trigger"
-              >
-                <span class="bs-stepper-circle">2</span>
-                <span class="bs-stepper-label">Potkategorije</span>
-              </button>
-            </div>
-          </div>
-          <div class="bs-stepper-content">
-            <!-- your steps content here -->
-            <div
-              id="logins-part"
-              class="content"
-              role="tabpanel"
-              aria-labelledby="logins-part-trigger"
+<div class="container-fluid m-0 search-container bg-color-primary-0">
+  <div class="row m-0">
+    <div class="col-sm-12 m-0 p-0">
+      <!-- <h1>{{ searchName }}</h1> -->
+      <div class="container-fluid m-0">
+        <div class="row m-0">
+          <div class="col-md-2 pr-1">
+            <ng-select
+              [items]="marks"
+              bindLabel="name"
+              [(ngModel)]="selectedMark"
+              (change)="onMarkChange($event)"
+              placeholder="Marka"
+              class="custom"
             >
-              <!-- <a *ngFor="let category of categories" href="JavaScript:void(0)" class="badge badge-pill badge-primary mr-2 mb-2">{{category.name}}</a> -->
-              <div class="container">
-                <div class="row d-flex justify-content-center">
-                  <div
-                    *ngFor="let category of categories"
-                    class="col-lg-3 col-md-4 col-sm-6 text-center"
-                  >
-                    <a
-                      href="JavaScript:void(0)"
-                      (click)="onCategoryClick(category.name)"
-                      class="badge mb-2 text-left"
-                      >> {{ category.name }}</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              id="information-part"
-              class="content"
-              role="tabpanel"
-              aria-labelledby="information-part-trigger"
-            >
-              <div class="container">
-                <div
-                  class="row justify-content-sm-between justify-content-md-start"
-                >
-                  <div
-                    *ngFor="let subCategory of subCategories"
-                    class="col-lg-3 col-md-4 col-sm-6 m-auto text-center"
-                  >
-                    <a
-                      href="JavaScript:void(0)"
-                      class="badge badge-pill badge-primary mb-2 text-center"
-                      >{{ subCategory.name }}</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
+            </ng-select>
           </div>
+          <div class="col-md-2 pl-0 pr-1">
+            <ng-select
+              [items]="models"
+              bindLabel="name"
+              [(ngModel)]="selectedModel"
+              (change)="onModelChange($event)"
+              placeholder="Model"
+              class="custom"
+            ></ng-select>
+          </div>
+          <div class="col-md-2 pl-0 pr-1">
+            <ng-select
+              [items]="categories"
+              bindLabel="name"
+              [(ngModel)]="selectedCategory"
+              (change)="onCategoryChange($event)"
+              (clear)="handleSearchButton()"
+              placeholder="Kategorija"
+              class="custom"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-4 pl-0">
+            <ng-select
+              [items]="subCategories"
+              bindLabel="name"
+              [(ngModel)]="selectedSubCategory"
+              (change)="onSubCategoryChange($event)"
+              (clear)="handleSearchButton()"
+              placeholder="Potkategorija"
+              class="custom"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-2 pl-0">
+              <a
+                class="btn btn-lg btn-outline-light search-button"
+                role="button"
+                href="javascript:void(0);"
+                (click)="onSearch()"
+                [class.disabled]="searchDisabled"
+                ><i class="fa fa-fw fa-search"></i></a
+              >
+            </div>
         </div>
       </div>
     </div>
   </div>
-
-  
+  <!-- <div class="row">
+    <div class="col">
+      <div
+        *ngIf="searchMode == 'detailed'"
+        id="search-stepper"
+        class="bs-stepper"
+      >
+        <div class="bs-stepper-header" role="tablist">
+         
+          <div class="step" data-target="#logins-part">
+            <button
+              type="button"
+              class="step-trigger"
+              role="tab"
+              aria-controls="logins-part"
+              id="logins-part-trigger"
+            >
+              <span class="bs-stepper-circle">1</span>
+              <span class="bs-stepper-label">Kategorije</span>
+            </button>
+          </div>
+          <div class="line"></div>
+          <div class="step" data-target="#information-part">
+            <button
+              type="button"
+              class="step-trigger"
+              role="tab"
+              aria-controls="information-part"
+              id="information-part-trigger"
+            >
+              <span class="bs-stepper-circle">2</span>
+              <span class="bs-stepper-label">Potkategorije</span>
+            </button>
+          </div>
+        </div>
+        <div class="bs-stepper-content">
+          <div
+            id="logins-part"
+            class="content"
+            role="tabpanel"
+            aria-labelledby="logins-part-trigger"
+          >
+            <div class="container">
+              <div class="row d-flex justify-content-center">
+                <div
+                  *ngFor="let category of categories"
+                  class="col-lg-3 col-md-4 col-sm-6 text-left pl-2"
+                >
+                  <a
+                    href="JavaScript:void(0)"
+                    (click)="onCategoryClick(category.name)"
+                    class="badge mb-2 text-left"
+                  >
+                    {{ category.name }}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            id="information-part"
+            class="content"
+            role="tabpanel"
+            aria-labelledby="information-part-trigger"
+          >
+            <div class="container">
+              <div
+                class="row justify-content-sm-between justify-content-md-start"
+              >
+                <div
+                  *ngFor="let subCategory of subCategories"
+                  class="col-lg-3 col-md-4 col-sm-6 m-auto text-center"
+                >
+                  <a
+                    href="JavaScript:void(0)"
+                    class="badge badge-pill badge-primary mb-2 text-center"
+                    >{{ subCategory.name }}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="row">
+    <div class="col">
+      <div class="tags">
+        <!-- <a
+          href="JavaScript:void(0)"
+          class="badge mb-2 text-left"
+        >
+          {{ selectedMark.name }}</a
+        >
+        <a
+          href="JavaScript:void(0)"
+          class="badge mb-2 text-left"
+        >
+          {{ selectedModel.name }}</a
+        >
+        <a
+          href="JavaScript:void(0)"
+          class="badge mb-2 text-left"
+        >
+          {{ selectedCategory.name }}</a
+        >
+        <a
+          href="JavaScript:void(0)"
+          class="badge mb-2 text-left"
+        >
+          {{ selectedSubCategory.name }}</a
+        > -->
+      </div>
+    </div>
+  </div>
+</div>

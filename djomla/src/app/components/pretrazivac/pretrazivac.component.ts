@@ -1,14 +1,22 @@
-import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
-import { SearchItem, SearchMode } from 'src/app/utils';
-import Stepper from 'bs-stepper';
-import { CarService } from 'src/app/services/car.service';
-import { SearchService } from 'src/app/services/search.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  ViewEncapsulation
+} from "@angular/core";
+import { SearchItem, SearchMode } from "src/app/utils";
+import Stepper from "bs-stepper";
+import { CarService } from "src/app/services/car.service";
+import { SearchService } from "src/app/services/search.service";
+import { Router, ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-pretrazivac",
   templateUrl: "./pretrazivac.component.html",
-  styleUrls: ["./pretrazivac.component.scss"]
+  styleUrls: ["./pretrazivac.component.scss"],
+  encapsulation: ViewEncapsulation.None
 })
 export class PretrazivacComponent implements OnInit {
   @Input() searchMode: string;
@@ -22,10 +30,10 @@ export class PretrazivacComponent implements OnInit {
   categories: SearchItem[];
   subCategories: SearchItem[];
 
-  selectedMark: string = null;
-  selectedModel: string = null;
-  selectedCategory: string = null;
-  selectedSubCategory: string = null;
+  selectedMark: SearchItem = null;
+  selectedModel: SearchItem = null;
+  selectedCategory: SearchItem = null;
+  selectedSubCategory: SearchItem = null;
 
   searchDisabled = true;
 
@@ -40,68 +48,73 @@ export class PretrazivacComponent implements OnInit {
 
   ngOnInit() {
     this.carService.getMarks().subscribe(marks => {
-      console.log(marks);
       this.marks = marks;
-      this.detailedInit();
     });
-  }
-
-  detailedInit() {
-    if (this.searchMode === SearchMode.DETAILED) {
-      this.selectedMark = this.searchService.selectedMark;
-
-      this.carService.getModels(this.selectedMark).subscribe(models => {
-        this.models = models;
-        this.selectedModel = this.searchService.selectedModel;
-        this.carService.getCategories().subscribe(categories => {
-          this.categories = categories;
-          this.selectedCategory = this.searchService.selectedCategory;
-        });
-      });
-
-      this.stepper = new Stepper(document.querySelector('#search-stepper'), {
-        linear: false,
-        animation: true
-      });
-    }
   }
 
   onMarkChange(value: any) {
-    console.log(this.selectedMark);
-    this.carService.getModels(this.selectedMark).subscribe(models => {
-      console.log("Radim u pocetnoj :D");
-      this.models = models;
-      this.selectedModel = null;
-      this.handleSearchButton();
-    });
-  }
-
-  onModelChange(value: any) {
-    this.carService
-      .getCategories(this.selectedModel, this.selectedMark)
-      .subscribe(categories => {
-        this.categories = categories;
-        this.handleSearchButton();
+    console.log("MAAARK");
+    this.handleSearchButton();
+    if (this.selectedMark) {
+      this.carService.getModels(this.selectedMark.id).subscribe(models => {
+        console.log("Radim u pocetnoj :D");
+        this.models = models;
       });
+    } else {
+      this.models = [];
+      this.categories = [];
+      this.subCategories = [];
+      this.selectedModel = null;
+      this.selectedCategory = null;
+      this.selectedSubCategory = null;
+    }
   }
 
-  onCategoryClick(value: any) {
-    this.carService.getSubCategories(value).subscribe(subCategories => {
-      this.subCategories = subCategories;
-    });
-    this.selectedCategory = value;
-    this.stepper.next();
+  onModelChange(value?: any) {
+    console.log("MODEEL!");
+    this.handleSearchButton();
+    if (this.selectedModel) {
+      this.carService.getCategories().subscribe(categories => {
+        this.categories = categories;
+      });
+    } else {
+      this.categories = [];
+      this.subCategories = [];
+      this.selectedCategory = null;
+      this.selectedSubCategory = null;
+    }
+  }
+
+  onCategoryChange(value: any) {
+    if (this.selectedCategory) {
+      this.carService.getSubCategories(value).subscribe(subCategories => {
+        this.subCategories = subCategories;
+      });
+    } else {
+      this.subCategories = [];
+      this.selectedSubCategory = null;
+    }
+  }
+
+  onSubCategoryChange(value: any) {
+    console.log(this.selectedSubCategory);
   }
 
   onSearch() {
-    this.searchService.selectedCategory = this.selectedCategory;
-    this.searchService.selectedMark = this.selectedMark;
-    this.searchService.selectedModel = this.selectedModel;
-    this.search.emit({});
+    // this.searchService.selectedCategory = this.selectedCategory;
+    // this.searchService.selectedMark = this.selectedMark;
+    // this.searchService.selectedModel = this.selectedModel;
+    this.search.emit({
+      mark: this.selectedMark,
+      model: this.selectedModel,
+      category: this.selectedCategory,
+      subCategory: this.selectedSubCategory
+    });
   }
 
   handleSearchButton() {
-    if (this.selectedMark === null) {
+    console.log("Handle!");
+    if (this.selectedMark === null || this.selectedModel === null) {
       this.searchDisabled = true;
     } else {
       this.searchDisabled = null;

@@ -1,17 +1,19 @@
 export class SearchItem {
-  constructor(public name?: string) {}
+  constructor(public name?: string, public id?: number) {}
 }
 
 export class Part {
   constructor(
-    private id: string,
-    private name: string,
-    private description: string,
-    private price: string,
-    private mark: string,
-    private model: string,
-    private category: string,
-    private subCategories: string[]
+    public id: number,
+    public name: string,
+    public subTitle: string,
+    public description: string,
+    public price: string,
+    public mark: string,
+    public model: string,
+    public category: string,
+    public subCategory: string,
+    public imgUrl?: string
   ) {}
 }
 
