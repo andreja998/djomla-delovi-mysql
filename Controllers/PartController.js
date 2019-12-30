@@ -96,7 +96,7 @@ exports.createPart = (req, res) => {
         connection.beginTransaction((error) => {
             if (error) res.status(500).json({ message: `Error while starting transaction`, error: error });
 
-            let lastInsertedId;
+            let lastInsertedId_part;
             let c_sc_id;
             let greske = { message: String, error: String };
 
@@ -108,7 +108,7 @@ exports.createPart = (req, res) => {
                     });
                 }
 
-                lastInsertedId = result.insertId;
+                lastInsertedId_part = result.insertId;
 
                 connection.query("SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?", [req.body.category_id, req.body.subcategory_id], (error, result) => {
                     if (error) {
@@ -125,7 +125,7 @@ exports.createPart = (req, res) => {
                         greske = { message: `Error while initializing variable c_sc_id`, error: error };
                     }
 
-                    connection.query("INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)", [c_sc_id, lastInsertedId, req.body.model_id], (error) => {
+                    connection.query("INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)", [c_sc_id, lastInsertedId_part, req.body.model_id], (error) => {
                         if (error) {
                             return connection.rollback(() => {
                                 greske = { message: `Error while inserting into PART_CATEGORY_SUBCATEGORY`, error: error };
@@ -141,7 +141,7 @@ exports.createPart = (req, res) => {
                                 });
                             }
                             connection.release();
-                            res.status(200).json({ message: "Successfully added new Part" });
+                            res.status(200).json({ message: "Successfully added new Part", part_id: lastInsertedId_part });
                         });
                     });
                 });

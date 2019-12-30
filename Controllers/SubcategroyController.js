@@ -22,7 +22,7 @@ exports.createSubcategory = (req, res) => {
                     });
                 }
 
-                lastInsertId = result.insertId;
+                lastInsertId_subcategory = result.insertId;
 
                 connection.query("INSERT INTO `CATEGORY_SUBCATEGORY` (`CATEGORY_ID`, `SUBCATEGORY_ID`) VALUES (?, ?)", [categoryID, lastInsertId], (error) => {
                     if (error) {
@@ -40,7 +40,7 @@ exports.createSubcategory = (req, res) => {
                             });
                         }
                         connection.release();
-                        res.status(200).json({ message: "Successfully added new Subcategroy" });
+                        res.status(200).json({ message: "Successfully added new Subcategroy", subcategory_id: lastInsertId_subcategory });
                     });
                 });
 

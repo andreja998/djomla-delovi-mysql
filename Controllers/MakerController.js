@@ -12,7 +12,8 @@ exports.createMaker = (req, res) => {
                 res.status(500).json({ message: `Something went wrong with our app or servers`, error: error });
             }
             else {
-                res.status(201).send({ message: `Maker ${req.body.maker_name} is successfully added.` });
+                let lastInsertId_maker = result.insertId;
+                res.status(201).send({ message: `Maker ${req.body.maker_name} is successfully added.`, maker_id: lastInsertId_maker });
             }
             connection.release();
         });

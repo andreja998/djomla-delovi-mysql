@@ -12,7 +12,8 @@ exports.createCategory = (req, res) => {
                 res.status(500).json({ message: `Something went wrong with our app or servers`, error: error });
             }
             else {
-                res.status(201).json({ message: `Category ${req.body.category_name} is successfully added.` });
+                let lastInsertedId_category = result.insertId;
+                res.status(201).json({ message: `Category ${req.body.category_name} is successfully added.`, category_id: lastInsertedId_category });
             }
             connection.release();
         });
