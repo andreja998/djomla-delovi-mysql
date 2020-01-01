@@ -45,6 +45,8 @@ export class AddSubcategoryComponent implements OnInit {
       if (this.chooseCategory.get('category').value) {
         this.carService.getSubCategories(res.id).subscribe(subcategories => {
           this.subCategories = subcategories;
+          this.removeSubCategoryF.reset();
+          this.updateSubCategoryF.reset();
           console.log(subcategories);
         });
       }
@@ -103,6 +105,7 @@ export class AddSubcategoryComponent implements OnInit {
           this.removeSubCategoryF.reset();
           this.updateSubCategoryF.reset();
           this.subCategories = [...this.subCategories, res];
+          this.toast.success('Potkategorija uspešno dodata');
         },
         err => {
           this.toast.error('Greška, kategorija nije dodata');

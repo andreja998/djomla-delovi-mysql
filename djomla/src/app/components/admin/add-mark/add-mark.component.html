@@ -1,102 +1,66 @@
 <div class="container">
-    <div class="row">
-      <div class="col-sm-12 col-lg-6">
-        <form class="form" [formGroup]="addCategoryF" (ngSubmit)="addCategory()">
-          <div class="wrapper">
-            <h3 class="title">Dodajte kategoriju</h3>
-            <div class="content">
-              <input
-                type="text"
-                id="category"
-                class="input-control"
-                placeholder="naziv kategorije"
-                formControlName="category"
-              />
-              <button [disabled]="addCategoryF.invalid" type="submit">
-                Dodaj
-              </button>
+  <div class="row">
+    <div class="col-sm-12 col-lg-6">
+      <form class="form" [formGroup]="addMarkF" (ngSubmit)="addMark()">
+        <div class="wrapper">
+          <h3 class="title">Dodajte marku</h3>
+          <div class="content">
+            <input type="text" id="mark" class="input-control" placeholder="naziv marke" formControlName="markName" />
+            <button class="btn-success" [disabled]="addMarkF.invalid" type="submit">
+              Dodaj
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-12 col-lg-6">
+      <form [formGroup]="removeMarkF" (ngSubmit)="removeMark()">
+        <div class="wrapper">
+          <h3 class="title">Uklonite marku</h3>
+          <div class="content">
+            <ng-select [items]="marks" bindLabel="name" placeholder="tražite marku" formControlName="mark" class="custom"></ng-select>
+            <button class="btn-danger" [disabled]="removeMarkF.get('mark').errors" type="submit">
+              Ukloni
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-12 col-lg-6">
+      <form [formGroup]="updateMarkF" (ngSubmit)="updateMark()">
+        <div class="wrapper update-content">
+          <h3 class="title">Promenite naziv</h3>
+          <div class="my-row update-select">
+            <ng-select [items]="marks" bindLabel="name" placeholder="tražite marku" formControlName="mark" class="custom update-input mb-2"></ng-select>
+          </div>
+          <div class="my-row no-wrap">
+            <input type="text" class="input-control" placeholder="naziv kategorije" formControlName="markName" />
+            <button class="btn-warning" [disabled]="updateMarkF.invalid" type="submit">
+              Promeni
+            </button>
+          </div>
+          <div
+            *ngIf="updateMarkF.get('markName').invalid && (updateMarkF.get('markName').dirty || updateMarkF.get('markName').touched)"
+            class="alert alert-danger mt-3"
+          >
+            <div class="my-column">
+              <h6>Morate uneti naziv marke</h6>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="col-sm-12 col-lg-6">
-        <form [formGroup]="removeCategoryF" (ngSubmit)="removeCategory()">
-          <div class="wrapper">
-            <h3 class="title">Uklonite kategoriju</h3>
-            <div class="content">
-              <ng-select
-                [items]="categories"
-                bindLabel="name"
-                placeholder="trazite kategoriju"
-                formControlName="category"
-                class="custom"
-              ></ng-select>
-              <button
-                [disabled]="removeCategoryF.get('category').errors"
-                type="submit"
-              >
-                Ukloni
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="col-sm-12 col-lg-6">
-        <form [formGroup]="updateCategoryF" (ngSubmit)="updateCategory()">
-          <div class="wrapper update-content">
-            <h3 class="title">Promenite naziv</h3>
-            <div class="my-row update-select">
-              <ng-select
-                [items]="categories"
-                bindLabel="name"
-                (change)="categorySelected()"
-                placeholder="trazite kategoriju"
-                formControlName="category"
-                class="custom update-input mb-2"
-              ></ng-select>
-            </div>
-            <div class="my-row no-wrap">
-              <input
-                type="text"
-                id="category"
-                class="input-control"
-                placeholder="naziv kategorije"
-                formControlName="categoryName"
-              />
-              <button [disabled]="updateCategoryF.invalid" type="submit">
-                Promeni
-              </button>
-            </div>
-            <div
-              *ngIf="
-                updateCategoryF.get('categoryName').invalid &&
-                (updateCategoryF.get('categoryName').dirty ||
-                  updateCategoryF.get('categoryName').touched)
-              "
-              class="alert alert-danger mt-3"
-            >
-              <div class="my-column">
-                <h6>Morate uneti naziv kategorije</h6>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="col-sm-12 mb-4">
-        <div class="wrapper read-section">
-          <div class="container">
-            <h3 class="title text-left ml-0">Lista kategorija</h3>
-            <div class="row">
-              <div
-                class="col-sm-12 col-md-6 col-lg-3 pl-1 pr-1 text-center"
-                *ngFor="let category of categories"
-              >
-                <h5 class="category-name pt-2 pb-2">{{ category.name }}</h5>
-              </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-12 mb-4">
+      <div class="wrapper read-section">
+        <div class="container">
+          <h3 class="title text-left ml-0">Lista marki</h3>
+          <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-3 pl-1 pr-1 text-center" *ngFor="let mark of marks">
+              <h5 class="category-name pt-2 pb-2">{{ mark.name }}</h5>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+</div>
