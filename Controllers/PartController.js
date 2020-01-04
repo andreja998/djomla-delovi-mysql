@@ -170,12 +170,34 @@ exports.getAllParts = (req, res) => {
     });
 }
 
-//Controler for geting one Part
-exports.getOnePart = (req, res) => {
+//Controler for geting one Part by ID
+exports.getOnePartByID = (req, res) => {
     pool.getConnection((error, connection) => {
         if (error) res.status(500).json({ message: `Error while getting new connection from pool`, error: error });
 
         connection.query("select * from `PART` where `PART_ID` = ?", [req.params.part_id], (error, result) => {
+            if (error) {
+                res.status(500).json({ message: `Something went wrong with our app or servers`, error: error });
+            } else {
+                if (result.length <= 0) {
+                    res.status(200).json("Part is not found.");
+                } else {
+                    res.status(200).json(result);
+                }
+            }
+            connection.release();
+        });
+    });
+}
+
+//Controler for geting one Part by Name
+exports.getOnePartByName = (req, res) => {
+    pool.getConnection((error, connection) => {
+        if (error) res.status(500).json({ message: `Error while getting new connection from pool`, error: error });
+
+        let name = '%' + req.params.part_name + '%';
+
+        connection.query("SELECT * FROM `PART` WHERE `PART_NAME` LIKE ? ", [name], (error, result) => {
             if (error) {
                 res.status(500).json({ message: `Something went wrong with our app or servers`, error: error });
             } else {
