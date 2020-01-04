@@ -175,7 +175,9 @@ exports.getOnePartByID = (req, res) => {
     pool.getConnection((error, connection) => {
         if (error) res.status(500).json({ message: `Error while getting new connection from pool`, error: error });
 
-        connection.query("select * from `PART` where `PART_ID` = ?", [req.params.part_id], (error, result) => {
+        if (!req.body.part_id) return res.status(400).json({ message: "Please provide a valid data part_id" });
+
+        connection.query("select * from `PART` where `PART_ID` = ?", [req.body.part_id], (error, result) => {
             if (error) {
                 res.status(500).json({ message: `Something went wrong with our app or servers`, error: error });
             } else {
@@ -195,9 +197,9 @@ exports.getOnePartByName = (req, res) => {
     pool.getConnection((error, connection) => {
         if (error) res.status(500).json({ message: `Error while getting new connection from pool`, error: error });
 
-        let name = '%' + req.params.part_name + '%';
+        if (!req.body.part_name) return res.status(400).json({ message: "Please provide a valid part_name" });
 
-        connection.query("SELECT * FROM `PART` WHERE `PART_NAME` LIKE ? ", [name], (error, result) => {
+        connection.query("SELECT * FROM `PART` WHERE `PART_NAME` LIKE ? ", ['%' + req.body.part_name + '%'], (error, result) => {
             if (error) {
                 res.status(500).json({ message: `Something went wrong with our app or servers`, error: error });
             } else {
