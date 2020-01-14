@@ -1,0 +1,4 @@
+POST http://localhost:3000/api/other/getPartsByName?page=12&search_name=BMW HTTP/1.1
+content-type: application/json
+
+
