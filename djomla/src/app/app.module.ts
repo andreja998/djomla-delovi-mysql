@@ -4,7 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {NgxPaginationModule} from 'ngx-pagination'
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxGalleryModule } from 'ngx-gallery';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -27,6 +28,7 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { LoginComponent } from './components/login/login.component';
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { ToastrModule } from 'ngx-toastr';
+import { DrahDropUploadDirective } from './components/admin/drah-drop-upload.directive';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { ToastrModule } from 'ngx-toastr';
     AddCategoryComponent,
     AddSubcategoryComponent,
     AddPartComponent,
-    LoginComponent
+    LoginComponent,
+    DrahDropUploadDirective
   ],
   imports: [
     BrowserModule,
@@ -55,10 +58,10 @@ import { ToastrModule } from 'ngx-toastr';
     NgxPaginationModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    NgxGalleryModule,
     ToastrModule.forRoot()
   ],
-  providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-    JwtHelperService ],
+  providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS }, JwtHelperService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

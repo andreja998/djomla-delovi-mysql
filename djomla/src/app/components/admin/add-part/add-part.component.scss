@@ -1,0 +1,364 @@
+@import '../../../../_theme_variables';
+
+.my-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.my-column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+.no-wrap {
+  flex-wrap: unset;
+}
+
+.search-part {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 90%;
+  margin-top: 60px;
+  border-radius: 10px;
+  // overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: rgb(255, 255, 255);
+}
+
+.search-input {
+  width: 100%;
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 12px 9px;
+  line-height: 1.5;
+  flex-grow: 1;
+  max-width: 75%;
+  margin-right: 10px;
+  flex-basis: auto;
+}
+
+.search-button {
+  display: inline-block;
+  border: 1px solid #eaeaea;
+  font-size: 1rem !important;
+  padding-top: 12px;
+  line-height: 1.5;
+  color: rgba(5, 45, 111, 1);
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 25%;
+  max-width: 30%;
+  min-width: 50px;
+}
+
+.search-button-text {
+  display: inline;
+}
+
+.part-content {
+  box-shadow: 1.8px 1.8px 3px rgba(55, 84, 170, 0.116), 2.7px 2.7px 4px rgba(55, 84, 170, 0.048), 4.7px 4.7px 6px rgba(0, 0, 0, 0.054),
+    6.5px 6.5px 9px rgba(0, 0, 0, 0.089), -2.8px -2.8px 2.2px rgba(255, 255, 255, 0.157), -6.7px -6.7px 5.3px rgba(255, 255, 255, 0.123),
+    -8.5px -8.5px 10px rgba(255, 255, 255, 0.102), -12.3px -12.3px 11.9px rgba(255, 255, 255, 0.075);
+  border-radius: 5px;
+  border: 1px solid rgba(55, 84, 170, 0.116);
+}
+
+.dugme {
+  border: 1px solid rgba(5, 45, 111, 1);
+  background-color: rgba(5, 45, 111, 1);
+  color: white;
+}
+
+.inner-content {
+}
+
+.read-section {
+  margin-top: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  .container {
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+}
+
+.category-name {
+  background-color: white;
+  border-radius: 4px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 10px;
+  box-shadow: 1.8px 1.8px 3px rgba(55, 84, 170, 0.116), 2.7px 2.7px 4px rgba(55, 84, 170, 0.048), 4.7px 4.7px 6px rgba(0, 0, 0, 0.054),
+    6.5px 6.5px 9px rgba(0, 0, 0, 0.089), -2.8px -2.8px 2.2px rgba(255, 255, 255, 0.157), -6.7px -6.7px 5.3px rgba(255, 255, 255, 0.123),
+    -8.5px -8.5px 10px rgba(255, 255, 255, 0.102), -12.3px -12.3px 11.9px rgba(255, 255, 255, 0.075);
+  border-radius: 5px;
+  border: 1px solid rgba(55, 84, 170, 0.116);
+  background-color: rgb(231, 231, 231);
+}
+.crud-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.crud-buttons button {
+  flex: 0 0 30%;
+  max-width: 150px;
+}
+.wrapper .content {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  ng-select {
+    padding-bottom: 10px;
+  }
+  .input-control:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  textarea {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+}
+.wrapper .content:not(:last-child) {
+  padding-bottom: 20px;
+}
+.container {
+  max-width: 100% !important;
+}
+
+form {
+  margin-top: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  // padding: 20px;
+}
+.update-select .custom {
+  padding-right: 10px;
+}
+
+.input-control {
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  padding: 12px 9px;
+  line-height: 1.15;
+  flex-grow: 1;
+  max-width: 75%;
+  flex-basis: auto;
+  min-width: 100px;
+}
+button {
+  border: none;
+  // padding: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 25%;
+  max-width: 30%;
+  min-width: 50px;
+}
+
+ng-select {
+  flex-grow: 1;
+  max-width: 100%;
+  flex-basis: auto;
+}
+.category-choser ng-select {
+  flex-grow: 1;
+  max-width: 100%;
+  flex-basis: auto;
+  margin-right: 0;
+}
+.ng-select.custom ::ng-deep .ng-select-container .ng-value-container .ng-input {
+  top: 12px !important;
+}
+.ng-select.custom ::ng-deep .ng-select-container {
+  height: unset;
+  line-height: 1.15;
+  padding: 12px 0px;
+}
+
+h3 {
+  margin-left: 10px;
+  margin-top: 10px;
+  text-align: left;
+  color: rgba(5, 45, 111, 1);
+}
+
+h4 {
+  color: rgba(5, 45, 111, 1);
+}
+
+@media only screen and (max-width: 350px) {
+  .search-button-text {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .search-part {
+    width: 100%;
+  }
+}
+
+// Image upload part
+
+body {
+  margin: 0;
+  padding: 25px 0 0 0;
+  background: #291464;
+}
+
+.container {
+}
+
+.progress {
+  margin-bottom: 30px;
+}
+
+.fileupload {
+  //   background-image: url('./assets/upload-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100px;
+  background-position: center;
+  background-color: #ffffff;
+  height: 200px;
+  width: 100%;
+  cursor: pointer;
+  /* border: 2px dashed #0f68ff; */
+  border-radius: 6px;
+  margin-bottom: 25px;
+  background-position: center 28px;
+}
+
+.ddinfo {
+  display: block;
+  text-align: center;
+  padding-top: 130px;
+  color: #a0a1a2;
+}
+
+.image-list {
+  display: flex;
+  width: 100%;
+  background: #c2dffc;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 10px 10px 10px 15px;
+  margin-bottom: 10px;
+}
+
+.image-list p {
+  line-height: normal;
+  padding: 0;
+  margin: 0 0 0 14px;
+  display: flex;
+  position: relative;
+  top: -2px;
+  color: #150938;
+  font-size: 14px;
+}
+
+.message {
+  text-align: center;
+  color: #c2dffc;
+}
+
+.part-img {
+  border: 1px solid rgba(5, 45, 111, 1);
+}
+
+.fileUploadWrapper {
+  background-color: white;
+}
+
+.wrapper-thumbnail {
+  position: relative;
+  overflow: hidden;
+}
+.wrapper-thumbnail:after {
+  content: '';
+  display: inline-block;
+  padding-top: 75%;
+}
+.wrapper-thumbnail img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%);
+}
+
+.search-trigger {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.remove {
+  // flex: 0 0 10%;
+  // justify-self: right;
+  position: absolute;
+  top: 0;
+  right: 15px;
+  // max-width: 50px;
+  cursor: pointer;
+}
+
+.img-name {
+  flex: 0 0 auto;
+}
+
+.profile {
+  width: 70px;
+  height: 70px;
+  flex: 0 0 30%;
+  max-width: 300px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.profile img {
+  width: 100%;
+}
+
+.remove img {
+  width: 15px;
+  position: relative;
+  top: -2px;
+}
+.fileUploadWrapper {
+  margin-top: 30px;
+}
+.fileUploadWrapper .card-body {
+  max-height: 330px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: 280px;
+  }
+}

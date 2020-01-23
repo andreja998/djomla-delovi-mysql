@@ -20,34 +20,32 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'add-cat',
-        component: AddCategoryComponent,
-        outlet: 'admin-router'
-      },
-      {
-        path: 'add-subcat',
-        component: AddSubcategoryComponent,
-        outlet: 'admin-router'
-      },
-      {
-        path: 'add-mark',
-        component: AddMarkComponent,
-        outlet: 'admin-router'
-      },
-      {
-        path: 'add-model',
-        component: AddModelComponent,
-        outlet: 'admin-router'
-      },
-      {
-        path: 'add-part',
-        component: AddPartComponent,
-        outlet: 'admin-router'
-      }
-    ]
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-cat',
+    component: AddCategoryComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-subcat',
+    component: AddSubcategoryComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-mark',
+    component: AddMarkComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-model',
+    component: AddModelComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-part',
+    component: AddPartComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

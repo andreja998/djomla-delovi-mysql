@@ -1,17 +1,120 @@
+.my-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.my-column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+.part-details {
+  height: inherit;
+}
+.height-100 {
+  height: 100%;
+}
 .dugme {
-    width: 50%;
+  width: fit-content;
+}
+
+.description {
+  color: rgb(47, 47, 47);
 }
 
 .content {
-    box-shadow: 0px 0px 4px #888888;
+  box-shadow: 0px 0px 4px #888888;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.pagination {
+  flex-wrap: wrap !important;
 }
 
 .main-container {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-.cena h4 {
+.part-content h5 {
+  color: rgba(5, 45, 111, 1);
+}
+.part-content {
+  box-shadow: 1.8px 1.8px 3px rgba(55, 84, 170, 0.116), 2.7px 2.7px 4px rgba(55, 84, 170, 0.048), 4.7px 4.7px 6px rgba(0, 0, 0, 0.054),
+    6.5px 6.5px 9px rgba(0, 0, 0, 0.089), -2.8px -2.8px 2.2px rgba(255, 255, 255, 0.157), -6.7px -6.7px 5.3px rgba(255, 255, 255, 0.123),
+    -8.5px -8.5px 10px rgba(255, 255, 255, 0.102), -12.3px -12.3px 11.9px rgba(255, 255, 255, 0.075);
+  border-radius: 5px;
+  border: 1px solid rgba(55, 84, 170, 0.116);
+  align-items: baseline;
+  background-color: rgb(231, 231, 231);
+}
+.dugme {
+  border: 1px solid rgba(5, 45, 111, 1);
+  background-color: rgba(5, 45, 111, 1);
+  color: white;
+}
 
+// .logo-img {
+//   max-height: 400px;
+//   width: auto;
+// }
+.logo-section {
+  h1 {
+    color: rgba(5, 45, 111, 1);
+  }
+}
+.wrapper-img-logo {
+  position: relative;
+  top: 50%;
+  max-height: 40%;
+  min-height: 300px;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+.wrapper-img-logo:after {
+  content: '';
+  display: inline-block;
+  padding-top: 75%;
+}
+.wrapper-img-logo img {
+  width: auto;
+  height: 100%;
+  // max-width: 100%;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%);
+}
+
+.wrapper-thumbnail {
+  position: relative;
+  top: 50%;
+  max-height: 250px;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+.wrapper-thumbnail:after {
+  content: '';
+  display: inline-block;
+  padding-top: 75%;
+}
+.wrapper-thumbnail img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%);
 }

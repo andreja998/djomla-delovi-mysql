@@ -85,6 +85,8 @@ export class AddMarkComponent implements OnInit {
           this.removeMarkF.reset();
           this.updateMarkF.reset();
           this.marks = [...this.marks, res];
+          console.log(res);
+          this.toast.success('Marka uspešno dodata');
         },
         err => {
           this.toast.error('Greška, marka nije dodata');

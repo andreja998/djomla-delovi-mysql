@@ -8,7 +8,7 @@ import { AuthUserService } from './auth-user.service';
 })
 export class AuthGuard implements CanActivate {
   constructor(public auth: AuthUserService, public router: Router) {}
-  
+
   canActivate(): boolean {
     console.log(this.auth.isAuthenticated());
     if (!this.auth.isAuthenticated()) {
@@ -17,5 +17,4 @@ export class AuthGuard implements CanActivate {
     }
     return true;
   }
-
 }

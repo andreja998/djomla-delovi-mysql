@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { of, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { of, Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { SearchItem, Part } from '../utils';
 
 @Injectable({
@@ -10,16 +10,18 @@ import { SearchItem, Part } from '../utils';
 export class CarService {
   public currentPage: Observable<number>;
   public name: string;
+  private baseUrl = 'http://localhost:3000/api/';
+
   constructor(private http: HttpClient) {}
 
   getMarks(): Observable<SearchItem[]> {
-    return this.http.get('http://localhost:3000/api/maker', {}).pipe(
-      map((res: Array<any>) => {
+    return this.http.get(this.baseUrl + 'maker', {}).pipe(
+      map((res: any) => {
         console.log(res);
-
         const marks: SearchItem[] = [];
-        marks.push(new SearchItem('Opel', 1));
-        marks.push(new SearchItem('BMW', 2));
+        res.forEach(element => {
+          marks.push(new SearchItem(element['MAKER_NAME'], element['MAKER_ID']));
+        });
 
         return marks;
       })
@@ -27,157 +29,147 @@ export class CarService {
   }
 
   getModels(markId: number): Observable<SearchItem[]> {
-    const obj = {};
-    obj['maker_id'] = markId;
-    return this.http.get('https://reqres.in/api/users?page=1', {}).pipe(
-      map((res: Response) => {
+    return this.http.post(this.baseUrl + 'model/getAllModels', { maker_id: markId }).pipe(
+      map((res: any) => {
         const models: SearchItem[] = [];
-        if (markId === 1) {
-          models.push(new SearchItem('Astra', 1));
-          models.push(new SearchItem('Corsa', 2));
-        } else {
-          models.push(new SearchItem('320 D', 3));
-          models.push(new SearchItem('318 D', 4));
-        }
+        console.log(res);
+        res.forEach(element => {
+          models.push(new SearchItem(element['MODEL_NAME'], element['MODEL_ID']));
+        });
 
         return models;
       })
     );
   }
 
-  getPartsByCategory(category: string, subCat: string) {
-    let jsonToSend = { category, subCat };
-    console.log(jsonToSend);
-    return this.http.post('https://reqres.in/api/users?page=2', jsonToSend).pipe(
-      map((res: Response) => {
-        const parts: Part[] = [];
-        for (let i = 11; i < 30; i++) {
-          parts.push(
-            new Part(
-              i,
-              i.toString(),
-              'Podnaslov - Stavka, Nesto, Svasta, Primer, Teksta Koji Moze Da Stoji Ovde',
-              'hbxcmvxmcbvxcv',
-              '4299 din',
-              'Opel',
-              'Corsa',
-              'Kat1',
-              'Sub' + i.toString()
-            )
-          );
-        }
+  getPartsByModel(modelId: number, markId: number, categoryId?: number, subCatId?: number, pageNumber?: number): Observable<Object> {
+    let queryToCall = 0;
+    if (markId !== undefined && modelId !== undefined && categoryId !== undefined && subCatId !== undefined) {
+      queryToCall = 3;
+    } else if (markId !== undefined && modelId !== undefined && categoryId !== undefined && subCatId === undefined) {
+      queryToCall = 2;
+    } else if (markId !== undefined && modelId !== undefined && categoryId === undefined && subCatId === undefined) {
+      queryToCall = 1;
+    }
+    const json = {
+      category_id: categoryId,
+      subcategory_id: subCatId,
+      maker_id: markId,
+      model_id: modelId,
+      option: queryToCall
+    };
 
-        return parts;
+    return this.http.post(this.baseUrl + 'other/getAllPArts?page=' + pageNumber, json).pipe(
+      map(res => {
+        console.log(res);
+
+        const newParts: Part[] = [];
+        res['pageOfItems'].forEach(element => {
+          const part = new Part(
+            element['PART_ID'],
+            element['PART_NAME'],
+            element['PART_DESC'],
+            element['PART_PRICE'],
+            new SearchItem(element['MAKER_NAME'], element['MAKER_ID']),
+            new SearchItem(element['MODEL_NAME'], element['MODEL_ID']),
+            new SearchItem(element['CATEGORY_NAME'], element['CATEGORY_ID']),
+            new SearchItem(element['SUBCATEGORY_NAME'], element['SUBCATEGORY_ID'])
+          );
+          newParts.push(part);
+        });
+
+        return { pager: res['pager'], parts: newParts };
       })
     );
   }
 
-  getPartsByModel(modelId: number, markId: number, categoryId?: number, subCatId?: number, fromNumber?: number, sizeNumber?: number): Observable<Part[]> {
-    let jsonToSend = {};
-    let queryToCall = 0;
-    if (markId != undefined) {
-      jsonToSend['maker_id'] = markId;
-      queryToCall++;
-    }
-    if (modelId != undefined) {
-      jsonToSend['model_id'] = modelId;
-      queryToCall++;
-    }
-    if (categoryId != undefined) {
-      jsonToSend['category_id'] = categoryId;
-      queryToCall++;
-    }
-    if (subCatId != undefined) {
-      jsonToSend['subcategory_id'] = subCatId;
-      queryToCall++;
-    }
-
-    console.log(jsonToSend);
-    return this.http.post('https://reqres.in/api/users?page=2', jsonToSend).pipe(
-      map((res: Response) => {
-        const parts: Part[] = [];
-        for (let i = 0; i < 5000; i++) {
-          parts.push(
-            new Part(
-              i,
-              'Delovi za BMW Serija 3' + i.toString(),
-              'Podnaslov - Stavka, Nesto, Svasta, Primer, Teksta Koji Moze Da Stoji Ovde',
-              'asdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfs',
-              '1550 din',
-              'Opel',
-              'Astra',
-              'Kat1',
-              'Sub' + i.toString()
-            )
-          );
+  getPartsByName(searchName: string, pageNumber: number): Observable<Object> {
+    console.log({ search_name: searchName, page: pageNumber });
+    return this.http.post(this.baseUrl + 'other/getPartsByName', { search_name: searchName, page: pageNumber }).pipe(
+      map(res => {
+        const newParts: Part[] = [];
+        if (res['pageOfItems']) {
+          res['pageOfItems'].forEach(element => {
+            const part = new Part(
+              element['PART_ID'],
+              element['PART_NAME'],
+              element['PART_DESC'],
+              element['PART_PRICE'],
+              new SearchItem(element['MAKER_NAME'], element['MAKER_ID']),
+              new SearchItem(element['MODEL_NAME'], element['MODEL_ID']),
+              new SearchItem(element['CATEGORY_NAME'], element['CATEGORY_ID']),
+              new SearchItem(element['SUBCATEGORY_NAME'], element['SUBCATEGORY_ID'])
+            );
+            newParts.push(part);
+          });
         }
-
-        return parts;
+        console.log(res['pager']);
+        console.log(res['pageOfItems']);
+        return { pager: res['pager'], parts: newParts };
       })
     );
   }
 
   getPart(partId: number): Observable<Part> {
-    return this.http.post('https://reqres.in/api/users?page=2', { part_id: partId }).pipe(
-      map((res: Response) => {
-        let part = new Part(
-          1,
-          'Moj Deo Ovde Naslov',
-          'Podnaslov - Stavka, Nesto, Svasta, Primer, Teksta Koji Moze Da Stoji Ovde',
-          'asdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfsasdasdssdsdfsdfs',
-          '1550 din',
-          'Opel',
-          'Astra',
-          'Kat1',
-          'Sub'
+    return this.http.post(this.baseUrl + 'other/getOnePart', { part_id: partId }).pipe(
+      map(res => {
+        console.log(res);
+        const part = new Part(
+          res[0]['PART_ID'],
+          res[0]['PART_NAME'],
+          res[0]['PART_DESC'],
+          res[0]['PART_PRICE'],
+          new SearchItem(res[0]['MAKER_NAME'], res[0]['MAKER_ID']),
+          new SearchItem(res[0]['MODEL_NAME'], res[0]['MODEL_ID']),
+          new SearchItem(res[0]['CATEGORY_NAME'], res[0]['CATEGORY_ID']),
+          new SearchItem(res[0]['SUBCATEGORY_NAME'], res[0]['SUBCATEGORY_ID'])
         );
+
+        console.log(part);
         return part;
       })
     );
   }
 
   getCategories(): Observable<SearchItem[]> {
-    return this.http.get('https://reqres.in/api/users?page=2', {}).pipe(
-      map((res: Response) => {
+    return this.http.get(this.baseUrl + 'category', {}).pipe(
+      map((res: any) => {
         console.log(res);
         const categories: SearchItem[] = [];
-        for (let i = 0; i < 20; i++) {
-          categories.push(new SearchItem('Kategorija ' + i, i));
-        }
+        res.forEach(element => {
+          categories.push(new SearchItem(element['CATEGORY_NAME'], element['CATEGORY_ID']));
+        });
 
         return categories;
       })
     );
   }
 
-  updateCategory(category: SearchItem) {
-    return this.http
-      .post('https://reqres.in/api/users?page=2', {
-        category_id: category.id,
-        new_name: category.name
+  updateCategory(category: SearchItem): Observable<any> {
+    return this.http.put(this.baseUrl + 'category', { category_id: category.id, category_name: category.name }).pipe(
+      map(res => {
+        console.log(res);
+        return;
       })
-      .pipe(map(res => {}));
+    );
   }
 
-  removeCategory(id: number): Observable<string> {
-    return this.http.post('https://reqres.in/api/users?page=2', { category_id: id }).pipe(
-      map(
-        res => {
-          res = 'Uspesno dodato';
-          return res.toString();
-        },
-        err => {}
-      )
+  removeCategory(id: number): Observable<any> {
+    return this.http.post(this.baseUrl + 'category/remove', { category_id: id }).pipe(
+      map(res => {
+        return;
+      })
     );
   }
 
   getSubCategories(categoryId: number): Observable<SearchItem[]> {
-    return this.http.post('https://reqres.in/api/users?page=2', { category_id: categoryId }).pipe(
-      map((res: Response) => {
+    return this.http.post(this.baseUrl + 'subcategory/getAllSubcategories', { category_id: categoryId }).pipe(
+      map((res: any) => {
         const categories: SearchItem[] = [];
-        for (let i = 16; i < 31; i++) {
-          categories.push(new SearchItem('Potkategorija ' + i, i));
-        }
+        console.log(res);
+        res.forEach(element => {
+          categories.push(new SearchItem(element['SUBCATEGORY_NAME'], element['SUBCATEGORY_ID']));
+        });
 
         return categories;
       })
@@ -185,8 +177,9 @@ export class CarService {
   }
 
   updateSubCategory(category: SearchItem, subCategory: SearchItem): Observable<any> {
+    console.log(subCategory);
     return this.http
-      .post('https://reqres.in/api/users?page=2', {
+      .put(this.baseUrl + 'subcategory', {
         category_id: category.id,
         subcategory_id: subCategory.id,
         subcategory_name: subCategory.name
@@ -194,63 +187,105 @@ export class CarService {
       .pipe(map((res: Response) => {}));
   }
 
-  createSubCategory(subCategoryName: string, category: SearchItem): Observable<SearchItem> {
-    return this.http.post('https://reqres.in/api/users?page=2', { subcategory_name: subCategoryName, category_id: category.id }).pipe(
-      map((res: Response) => {
-        console.log(res);
+  removeSubCategory(id: number): Observable<any> {
+    return this.http.post(this.baseUrl + 'subcategory/remove', { subcategory_id: id }).pipe(
+      map(res => {
+        return;
+      })
+    );
+  }
 
-        const subCategory = new SearchItem('ime', 213);
+  createSubCategory(subCategoryName: string, category: SearchItem): Observable<SearchItem> {
+    return this.http.post(this.baseUrl + 'subcategory', { subcategory_name: subCategoryName, category_id: category.id }).pipe(
+      map(res => {
+        const subCategory = new SearchItem(subCategoryName, res['subcategory_id']);
         return subCategory;
       })
     );
   }
 
-  getImagesById(partId: number): Observable<string[]> {
-    return this.http.post('https://reqres.in/api/users?page=2', { part_id: partId }).pipe(
-      map((res: Response) => {
-        const images = [];
-        for (let i = 0; i < 5; i++) {
-          images.push('assets/images/Pocetna.png');
-        }
+  getImagesById(partId: number): Observable<Object[]> {
+    return this.http.post(this.baseUrl + 'images/getPhotos', { part_id: partId }).pipe(
+      map((res: any) => {
+        const images: object[] = [];
+        console.log(res);
+        res['result'].forEach(item => {
+          images.push({ url: 'http://localhost:3000/' + item['PICTURE_NAME'], destination: item['PICTURE_DEST'] });
+        });
 
         return images;
       })
     );
   }
 
-  createPart(part: Object): Observable<any> {
-    return of(undefined);
+  createPart(part: Part): Observable<Part> {
+    const jsonPart = {
+      part_name: part.name,
+      part_price: part.price,
+      part_desc: part.description,
+      category_id: part.category.id,
+      subcategory_id: part.subCategory.id,
+      maker_id: part.mark.id,
+      model_id: part.model.id
+    };
+    return this.http.post(this.baseUrl + 'part', jsonPart).pipe(
+      map(res => {
+        console.log(res);
+        part.id = res['part_id'];
+        const newPart = part;
+
+        return newPart;
+      })
+    );
   }
 
   removePart(partId: number): Observable<any> {
-    return of(undefined);
+    return this.http.post(this.baseUrl + 'part/remove', { part_id: partId }).pipe(
+      map(res => {
+        return;
+      })
+    );
   }
 
-  updatePart(part: Object): Observable<any> {
-    return of(part);
+  updatePart(part: Part): Observable<Part> {
+    const jsonPart = {
+      part_id: part.id,
+      part_name: part.name,
+      part_price: part.price,
+      part_desc: part.description,
+      category_id: part.category.id,
+      subcategory_id: part.subCategory.id,
+      maker_id: part.mark.id,
+      model_id: part.model.id
+    };
+    return this.http.put(this.baseUrl + 'part', jsonPart).pipe(
+      map(res => {
+        return part;
+      })
+    );
   }
 
   createModel(modelName: string, mark: SearchItem): Observable<any> {
-    return this.http.post('https://reqres.in/api/users?page=2', { model_name: modelName, mark_id: mark.id }).pipe(
+    return this.http.post(this.baseUrl + 'model', { model_name: modelName, maker_id: mark.id }).pipe(
       map((res: any) => {
-        console.log(res);
-
-        const model = new SearchItem(res.model_name, res.model_id);
+        const model = new SearchItem(modelName, res['model_id']);
         return model;
       })
     );
   }
 
   removeModel(modelId: number, markId: number): Observable<any> {
-    return this.http.post('https://reqres.in/api/users?page=2', { mark_id: markId, model_id: modelId }).pipe(
+    return this.http.post(this.baseUrl + 'model/remove', { maker_id: markId, model_id: modelId }).pipe(
       map((res: any) => {
         return;
       })
     );
   }
 
-  updateModel(mark: SearchItem, modelName: string): Observable<any> {
-    return this.http.post('https://reqres.in/api/users?page=2', { mark_id: mark.id, model_name: modelName }).pipe(
+  updateModel(modelId: number, modelName: string): Observable<any> {
+    console.log(modelId);
+    console.log(modelName);
+    return this.http.put(this.baseUrl + 'model', { model_name: modelName, model_id: modelId }).pipe(
       map((res: any) => {
         return;
       })
@@ -258,18 +293,18 @@ export class CarService {
   }
 
   createMark(name: string): Observable<SearchItem> {
-    return this.http.post('https://reqres.in/api/users?page=2', { mark_name: name }).pipe(
+    return this.http.post(this.baseUrl + 'maker', { maker_name: name }).pipe(
       map((res: any) => {
-        const mark = new SearchItem(res.mark_name, res.mark_id);
+        const mark = new SearchItem(name, res.maker_id);
         return mark;
       })
     );
   }
 
   updateMark(markId: number, markName: string): Observable<SearchItem> {
-    return this.http.post('https://reqres.in/api/users?page=2', { mark_name: markName, mark_id: markId }).pipe(
+    return this.http.put(this.baseUrl + 'maker', { maker_name: markName, maker_id: markId }).pipe(
       map((res: any) => {
-        const mark = new SearchItem(res.mark_name, res.mark_id);
+        const mark = new SearchItem(markName, markId);
 
         return mark;
       })
@@ -277,19 +312,59 @@ export class CarService {
   }
 
   removeMark(markId: number): Observable<any> {
-    return this.http.post('https://reqres.in/api/users?page=2', { mark_id: markId }).pipe(
+    return this.http.post(this.baseUrl + 'maker/remove', { maker_id: markId }).pipe(
       map((res: any) => {
         return;
       })
     );
   }
 
-  createCategory(name: string): Observable<any> {
-    return this.http.post('https://reqres.in/api/users?page=2', { category_name: name }).pipe(
+  createCategory(name: string): Observable<SearchItem> {
+    return this.http.post(this.baseUrl + 'category', { category_name: name }).pipe(
       map((res: any) => {
-        const category = new SearchItem(res.category_name, res.category_id);
+        const category = new SearchItem(name, res['category_id']);
         return category;
       })
     );
+  }
+
+  addFiles(images: File, partId: number) {
+    var arr = [];
+    var formData = new FormData();
+    arr.push(images);
+
+    arr[0].forEach((item, i) => {
+      formData.append('multi-files', arr[0][i]);
+    });
+
+    return this.http
+      .post(this.baseUrl + 'images/uploadImages?part_id=' + partId, formData, {
+        reportProgress: true,
+        observe: 'events'
+      })
+      .pipe(catchError(this.errorMgmt));
+  }
+
+  removeImages(urls: string[]): Observable<any> {
+    console.log('Before urls');
+    console.log(urls);
+    return this.http.post(this.baseUrl + 'images/deleteImages', { images: urls }).pipe(
+      map(res => {
+        return;
+      })
+    );
+  }
+
+  errorMgmt(error: HttpErrorResponse) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Get client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Get server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.log(errorMessage);
+    return throwError(errorMessage);
   }
 }

@@ -54,7 +54,8 @@ export class AddSubcategoryComponent implements OnInit {
   }
 
   removeSubCategory() {
-    this.carService.removeCategory(this.removeSubCategoryF.value.subCategory.id).subscribe(
+    console.log(this.removeSubCategoryF.value.subCategory.id);
+    this.carService.removeSubCategory(this.removeSubCategoryF.value.subCategory.id).subscribe(
       res => {
         this.subCategories = this.subCategories.filter((value, index, array) => {
           return value.id !== this.removeSubCategoryF.value.subCategory.id;
@@ -76,20 +77,25 @@ export class AddSubcategoryComponent implements OnInit {
     });
     console.log(exist);
     if (exist.length === 0) {
-      this.carService.updateSubCategory(this.chooseCategory.value.category as SearchItem, this.updateSubCategoryF.value.subCategoryName).subscribe(
-        res => {
-          const updated = this.subCategories.filter(value => {
-            return value.name !== this.updateSubCategoryF.value.subCategory.name;
-          });
-          this.subCategories = [...updated, new SearchItem(this.updateSubCategoryF.value.subCategoryName, this.updateSubCategoryF.value.subCategory.id)];
-          this.updateSubCategoryF.reset();
-          this.removeSubCategoryF.reset();
-          this.toast.success('Naziv potkategorije promenjen');
-        },
-        err => {
-          this.toast.error('Greška, potkategorija nije promenjena');
-        }
-      );
+      this.carService
+        .updateSubCategory(
+          this.chooseCategory.value.category as SearchItem,
+          new SearchItem(this.updateSubCategoryF.value.subCategoryName, this.updateSubCategoryF.value.subCategory.id)
+        )
+        .subscribe(
+          res => {
+            const updated = this.subCategories.filter(value => {
+              return value.name !== this.updateSubCategoryF.value.subCategory.name;
+            });
+            this.subCategories = [...updated, new SearchItem(this.updateSubCategoryF.value.subCategoryName, this.updateSubCategoryF.value.subCategory.id)];
+            this.updateSubCategoryF.reset();
+            this.removeSubCategoryF.reset();
+            this.toast.success('Naziv potkategorije promenjen');
+          },
+          err => {
+            this.toast.error('Greška, potkategorija nije promenjena');
+          }
+        );
     } else {
       this.toast.error('Potkategorija sa unetim nazivom postoji');
     }

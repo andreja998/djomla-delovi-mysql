@@ -1,18 +1,12 @@
-<div class="container">
+<div class="container main-container">
   <div class="row">
     <div class="col-sm-12 col-lg-6">
       <form class="form" [formGroup]="addCategoryF" (ngSubmit)="addCategory()">
         <div class="wrapper">
           <h3 class="title">Dodajte kategoriju</h3>
           <div class="content">
-            <input
-              type="text"
-              id="category"
-              class="input-control"
-              placeholder="naziv kategorije"
-              formControlName="category"
-            />
-            <button [disabled]="addCategoryF.invalid" type="submit">
+            <input type="text" id="category" class="input-control" placeholder="naziv kategorije" formControlName="category" />
+            <button [disabled]="addCategoryF.invalid" type="submit" class="btn-success">
               Dodaj
             </button>
           </div>
@@ -24,17 +18,8 @@
         <div class="wrapper">
           <h3 class="title">Uklonite kategoriju</h3>
           <div class="content">
-            <ng-select
-              [items]="categories"
-              bindLabel="name"
-              placeholder="trazite kategoriju"
-              formControlName="category"
-              class="custom"
-            ></ng-select>
-            <button
-              [disabled]="removeCategoryF.get('category').errors"
-              type="submit"
-            >
+            <ng-select [items]="categories" bindLabel="name" placeholder="trazite kategoriju" formControlName="category" class="custom"></ng-select>
+            <button [disabled]="removeCategoryF.get('category').errors" type="submit" class="btn-danger">
               Ukloni
             </button>
           </div>
@@ -49,30 +34,19 @@
             <ng-select
               [items]="categories"
               bindLabel="name"
-              (change)="categorySelected()"
               placeholder="trazite kategoriju"
               formControlName="category"
               class="custom update-input mb-2"
             ></ng-select>
           </div>
           <div class="my-row no-wrap">
-            <input
-              type="text"
-              id="category"
-              class="input-control"
-              placeholder="naziv kategorije"
-              formControlName="categoryName"
-            />
-            <button [disabled]="updateCategoryF.invalid" type="submit">
+            <input type="text" id="category" class="input-control" placeholder="naziv kategorije" formControlName="categoryName" />
+            <button [disabled]="updateCategoryF.invalid" type="submit" class="btn-warning">
               Promeni
             </button>
           </div>
           <div
-            *ngIf="
-              updateCategoryF.get('categoryName').invalid &&
-              (updateCategoryF.get('categoryName').dirty ||
-                updateCategoryF.get('categoryName').touched)
-            "
+            *ngIf="updateCategoryF.get('categoryName').invalid && (updateCategoryF.get('categoryName').dirty || updateCategoryF.get('categoryName').touched)"
             class="alert alert-danger mt-3"
           >
             <div class="my-column">
@@ -87,10 +61,7 @@
         <div class="container">
           <h3 class="title text-left ml-0">Lista kategorija</h3>
           <div class="row">
-            <div
-              class="col-sm-12 col-md-6 col-lg-3 pl-1 pr-1 text-center"
-              *ngFor="let category of categories"
-            >
+            <div class="col-sm-12 col-md-6 col-lg-3 pl-1 pr-1 text-center" *ngFor="let category of categories">
               <h5 class="category-name pt-2 pb-2">{{ category.name }}</h5>
             </div>
           </div>

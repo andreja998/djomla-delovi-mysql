@@ -2,17 +2,10 @@
   <div class="row m-0">
     <div class="col-sm-12 m-0 p-0">
       <!-- <h1>{{ searchName }}</h1> -->
-      <div class="container-fluid m-0">
+      <div class="container-fluid select-boxes">
         <div class="row m-0">
           <div class="col-md-2 pr-1">
-            <ng-select
-              [items]="marks"
-              bindLabel="name"
-              [(ngModel)]="selectedMark"
-              (change)="onMarkChange($event)"
-              placeholder="Marka"
-              class="custom"
-            >
+            <ng-select [items]="marks" bindLabel="name" [(ngModel)]="selectedMark" (change)="onMarkChange($event)" placeholder="Marka" class="custom">
             </ng-select>
           </div>
           <div class="col-md-2 pl-0 pr-1">
@@ -50,15 +43,15 @@
             </ng-select>
           </div>
           <div class="col-md-2 pl-0">
-              <a
-                class="btn btn-lg btn-outline-light search-button"
-                role="button"
-                href="javascript:void(0);"
-                (click)="onSearch()"
-                [class.disabled]="searchDisabled"
-                ><i class="fa fa-fw fa-search"></i></a
-              >
-            </div>
+            <a
+              class="btn btn-lg btn-outline-light search-button"
+              role="button"
+              href="javascript:void(0);"
+              (click)="onSearch()"
+              [class.disabled]="searchDisabled"
+              ><i class="fa fa-fw fa-search"></i
+            ></a>
+          </div>
         </div>
       </div>
     </div>

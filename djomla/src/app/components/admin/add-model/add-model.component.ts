@@ -76,7 +76,7 @@ export class AddModelComponent implements OnInit {
     });
     console.log(exist);
     if (exist.length === 0) {
-      this.carService.updateModel(this.chooseMark.value.mark as SearchItem, this.updateModelF.value.modelName).subscribe(
+      this.carService.updateModel(this.updateModelF.value.model.id, this.updateModelF.value.modelName).subscribe(
         res => {
           const updated = this.models.filter(value => {
             return value.name !== this.updateModelF.value.model.name;

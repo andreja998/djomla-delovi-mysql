@@ -1,56 +1,82 @@
 <div class="container-fluid main-container p-0">
   <div class="row m-0">
     <div class="col-sm-12 m-0 p-0">
-      <app-pretrazivac
-        #pretrazivac
-        [searchName]="searchName"
-        [searchMode]="searchMode"
-        (search)="onSearch($event)"
-      ></app-pretrazivac>
+      <app-pretrazivac #pretrazivac [searchName]="searchName" [searchMode]="searchMode" (search)="onSearch($event)"></app-pretrazivac>
     </div>
   </div>
-  <div class="row pt-4 pl-4">
-    <div class="col-md-9">
+  <!-- <div class="row pt-4 logo-section">
+    <div class="col-md-5">
+      <div class="wrapper-img-logo">
+        <img src="assets/images/DjomlaLogoFit.png" alt="Image" class="logo-img" />
+      </div>
+    </div>
+    <div class="col-md-7 justify-content-center">
+      <h1 class="text-center">Polovni delovi za automobile!</h1>
+      <p></p>
+    </div>
+  </div> -->
+  <div class="row pt-4">
+    <div class="col-md-12 col-sm-12">
       <div class="container-fluid">
-        <div class="row">
-          <div
-            class="col-sm-12 content mb-2 p-2"
-            *ngFor="
-              let part of parts
-                | paginate
-                  : { id: 'paginacija', itemsPerPage: 10, currentPage: page }
-            "
-          >
-            <div class="container">
+        <div class="row align-items-baseline">
+          <div class="col-sm-12 part-content mb-2 p-2" *ngFor="let part of parts | paginate: { id: 'paginacija', itemsPerPage: 10, currentPage: page }">
+            <div class="container-fluid pl-1 pr-1">
               <div class="row">
-                <div class="col-md-4">
-                  <img src="part.imgUrl" alt="Image" class="img-fluid" />
+                <div class="col-sm-12 col-md-4 p-0">
+                  <div class="wrapper-thumbnail">
+                    <img src="assets/images/DjomlaLogo.png" alt="Image" class="" />
+                  </div>
                 </div>
-                <div class="col-md-8 clearfix">
-                  <h4 class="text-capitalize font-weight-bold">
-                    {{ part.name }}
-                  </h4>
-                  <p class="lead">
-                    {{ part.subTitle }}
-                  </p>
-                  <p class="small color-primary-4 mb-1">Marka: {{ part.mark }}</p>
-                  <p class="small color-primary-4 mb-1">Model: {{ part.model }}</p>
-                  <p class="small color-primary-4 mb-1">
-                    Kategorija: {{ part.category }}
-                  </p>
-                  <p class="small color-primary-4">
-                    Potkategorija: {{ part.subCategory }}
-                  </p>
-                  <div class="cena justify-content-center clearfix">
-                    <h4 class="text-success float-left mt-2">$20.5</h4>
-                    <a
-                      href="javascript:void(0);"
-                      (click)="onPartClick(part.id)"
-                      class="btn bg-color-complement-2 btn-lg active dugme float-right"
-                      role="button"
-                      aria-pressed="true"
-                      >Pogledajte</a
-                    >
+                <div class="col-sm-12 col-md-8 clearfix">
+                  <div class="container-fluid p-0 height-100">
+                    <div class="row height-100 p-0">
+                      <div class="col-12">
+                        <!-- <h5 class="text-capitalize">
+                          {{ part.name }}
+                        </h5> -->
+                        <ng-container *ngIf="part.name.length > 90">
+                          <h5>{{ part.name.slice(0, 15) }}...</h5>
+                        </ng-container>
+                        <ng-container *ngIf="part.name.length <= 90">
+                          <h5>{{ part.name }}</h5>
+                        </ng-container>
+                      </div>
+                      <div class="col-12 description">
+                        <div class="container-fluid p-0">
+                          <div class="row p-0">
+                            <div class="col-lg-4 col-sm-12">
+                              <p class="mb-1">Marka: {{ part.mark.name }}</p>
+                              <p class="mb-1">Model: {{ part.model.name }}</p>
+                              <p class="mb-1">Kategorija: {{ part.category.name }}</p>
+                              <p class="">Potkategorija: {{ part.subCategory.name }}</p>
+                            </div>
+                            <div class="col-lg-8 col-sm-12">
+                              <ng-container *ngIf="screenSmall == false">
+                                <ng-container *ngIf="part.description.length < 300">
+                                  <p class="small">{{ part.description }}</p>
+                                </ng-container>
+                                <ng-container *ngIf="part.description.length >= 300">
+                                  <p class="small">{{ part.description.slice(0, 230) }}...</p>
+                                </ng-container>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12 align-self-end">
+                        <div class="cena justify-content-center clearfix">
+                          <h4 class="text-success float-left mt-2">{{ part.price }}$</h4>
+                          <a
+                            href="javascript:void(0);"
+                            (click)="onPartClick(part.id)"
+                            class="btn btn-lg active dugme float-right"
+                            role="button"
+                            aria-pressed="true"
+                            >Pogledajte</a
+                          >
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -59,12 +85,22 @@
         </div>
         <div class="row">
           <div class="col">
-            <pagination-controls
-              id="paginacija"
-              maxSize="10"
-              directionLinks="true"
-              (pageChange)="onChange($event)"
-            ></pagination-controls>
+            <div class="pb-0 pt-3">
+              <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-sm">
+                <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item first-item">
+                  <a routerLink [queryParams]="{ page: 1 }" class="page-link">First</a>
+                </li>
+
+                <li *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }" class="page-item number-item">
+                  <a [routerLink]="[]" (click)="loadPage(page)" class="page-link">{{ page }}</a>
+                </li>
+
+                <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item last-item">
+                  <a routerLink [queryParams]="{ page: pager.totalPages }" class="page-link">Last</a>
+                </li>
+              </ul>
+            </div>
+
             <!-- asd
             <app-pagination
               [items]="parts"

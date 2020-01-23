@@ -4,15 +4,14 @@ export class SearchItem {
 
 export class Part {
   constructor(
-    public id: number,
-    public name: string,
-    public subTitle: string,
-    public description: string,
-    public price: string,
-    public mark: string,
-    public model: string,
-    public category: string,
-    public subCategory: string,
+    public id?: number,
+    public name?: string,
+    public description?: string,
+    public price?: string,
+    public mark?: SearchItem,
+    public model?: SearchItem,
+    public category?: SearchItem,
+    public subCategory?: SearchItem,
     public imgUrl?: string
   ) {}
 }

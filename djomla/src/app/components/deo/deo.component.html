@@ -1,19 +1,20 @@
 <!-- Page Content -->
+<ngx-gallery #ngxgallery [options]="galleryOptions" [images]="ngxImages"> </ngx-gallery>
+
 <div class="container-fluid">
   <!-- Portfolio Item Heading -->
-  <div class="row pt-3 pb-3 pl-4 mt-4 mb-4 bg-color-primary-0">
-    <h2>{{ part.name }} - {{ part.subTitle }}</h2>
+
+  <div class="row pb-3 part-name">
+    <h2>{{ part.name }}</h2>
   </div>
 
   <!-- Portfolio Item Row -->
-  <div class="row pl-4">
-    <div class="col-md-7">
+  <div class="row">
+    <div class="col-md-6 p-sm-0 pr-md-2">
       <div class="swiper-container gallery-top">
         <div class="swiper-wrapper">
-          <div *ngFor="let img of images" class="swiper-slide">
-            <div class="swiper-zoom-container wrapper-thumbnail">
-              <img src="{{ img }}" alt="asd" />
-            </div>
+          <div *ngFor="let img of images; let i = index" class="wrapper-thumbnail swiper-slide">
+            <img src="{{ img }}" (click)="imageClick(i)" alt="img" />
           </div>
         </div>
         <!-- Add Arrows -->
@@ -23,7 +24,7 @@
       <div class="swiper-container gallery-thumbs">
         <div class="swiper-wrapper">
           <div *ngFor="let img of images" class="swiper-slide">
-            <div class="swiper-zoom-container wrapper-thumbnail">
+            <div class="wrapper-thumbnail">
               <img src="{{ img }}" alt="img" />
             </div>
           </div>
@@ -31,28 +32,20 @@
       </div>
     </div>
 
-    <div class="col-md-5 bg-color-primary-0">
-      <h3 class="pt-4 pb-2">Dogovor</h3>
+    <div class="col-md-6 part-details">
+      <h3 class="pt-4 pb-2 text-success">Dogovor</h3>
       <hr />
 
       <div>
-          <h3>Opis</h3>
-        <p class="pt-2 lead">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra
-          euismod odio, gravida pellentesque urna varius vitae. Sed dui lorem,
-          adipiscing in adipiscing et, interdum nec metus. Mauris ultricies,
-          justo eu convallis placerat, felis enim.
-        </p>
-        <hr/>
         <h3 class="pb-2">Detalji</h3>
-        <p class="color-primary-4 mb-3">Marka: {{ part.mark }}</p>
-        <p class="color-primary-4 mb-3">Model: {{ part.model }}</p>
-        <p class="color-primary-4 mb-3">
-          Kategorija: {{ part.category }}
-        </p>
-        <p class="color-primary-4">
-          Potkategorija: {{ part.subCategory }}
-        </p>
+        <p class="mb-3">Marka: {{ part.mark.name }}</p>
+        <p class="mb-3">Model: {{ part.model.name }}</p>
+        <p class="mb-3">Kategorija: {{ part.category.name }}</p>
+        <p class="">Potkategorija: {{ part.subCategory.name }}</p>
+
+        <hr />
+        <h3>Opis</h3>
+        <p class="pt-2 lead description">{{ part.description }}</p>
       </div>
     </div>
   </div>

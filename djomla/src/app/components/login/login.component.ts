@@ -9,9 +9,8 @@ import { AuthUserService } from 'src/app/services/auth-user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
   loginForm: FormGroup;
-  
+
   constructor(private router: Router, private formBuilder: FormBuilder, private authUser: AuthUserService) {}
 
   ngOnInit() {
@@ -24,8 +23,8 @@ export class LoginComponent implements OnInit {
   onLogin() {
     console.log(this.loginForm.get('username').value);
     this.authUser.login(this.loginForm.get('username').value, this.loginForm.get('password').value).subscribe(res => {
+      console.log(res);
       this.router.navigate(['admin']);
     });
   }
-
 }
