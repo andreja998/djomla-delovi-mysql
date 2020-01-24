@@ -218,14 +218,14 @@ export class AddPartComponent implements OnInit {
   }
 
   updatePart() {
-    this.updateImages(this.part.id);
     this.carService.updatePart(this.part).subscribe(
       part => {
         this.part = part;
-        this.toast.success('Deo uklonjen');
+        this.updateImages(this.part.id);
+        this.toast.success('Deo promenjen');
       },
       err => {
-        this.toast.error('Deo nije uklonjen');
+        this.toast.error('Deo nije promenjen');
       }
     );
   }
@@ -247,6 +247,7 @@ export class AddPartComponent implements OnInit {
             this.toast.success('Slike uklonjene');
           },
           err => {
+            console.log(err);
             this.toast.error('Slike nisu uklonjene');
           }
         );

@@ -350,6 +350,7 @@ export class CarService {
     console.log(urls);
     return this.http.post(this.baseUrl + 'images/deleteImages', { images: urls }).pipe(
       map(res => {
+        console.log(res);
         return;
       })
     );

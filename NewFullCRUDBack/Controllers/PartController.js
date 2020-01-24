@@ -276,15 +276,15 @@ exports.getOnePart = (req, res) => {
 
 //Controler for updating one Part
 exports.updateOnePart = (req, res) => {
-  if (
-    (!req.body.part_name,
-    !req.body.part_price,
-    !req.body.part_desc,
-    !req.body.part_id)
-  )
-    return res
-      .status(400)
-      .json({ message: "Please provide a valid data for updating Part" });
+  // if (
+  //   (!req.body.part_name,
+  //   !req.body.part_price,
+  //   !req.body.part_desc,
+  //   !req.body.part_id,)
+  // )
+  // return res
+  //   .status(400)
+  //   .json({ message: "Please provide a valid data for updating Part" });
 
   pool.getConnection((error, connection) => {
     if (error)
@@ -301,82 +301,63 @@ exports.updateOnePart = (req, res) => {
         });
 
       let lastInsertedId_part;
-      let c_sc_id;
       let greske = { message: String, error: String };
 
       connection.query(
-        "INSERT INTO `PART` (`PART_NAME`, `PART_PRICE`, `PART_DESC`) VALUES (?, ?, ?)",
-        [req.body.part_name, req.body.part_price, req.body.part_desc],
+        "UPDATE `PART` SET `PART_NAME` = ?, `PART_PRICE` = ?, `PART_DESC` = ? WHERE `PART_ID` = ?",
+        [
+          req.body.part_name,
+          req.body.part_price,
+          req.body.part_desc,
+          req.body.part_id
+        ],
         (error, result) => {
           if (error) {
             return connection.rollback(() => {
               greske = {
-                message: `Error while inserting into PART`,
+                message: `Error while updating PART`,
                 error: error
               };
               return res.status(500).json(greske);
             });
           }
 
-          lastInsertedId_part = result.insertId;
-
           connection.query(
-            "SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?",
-            [req.body.category_id, req.body.subcategory_id],
+            "UPDATE `PART_CATEGORY_SUBCATEGORY` SET  `CATEGORY_SUBCATEGORY_ID` = (SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?), `MODEL_ID` = ? WHERE `PART_ID` = ?",
+            [
+              req.body.category_id,
+              req.body.subcategory_id,
+              req.body.model_id,
+              req.body.part_id
+            ],
             (error, result) => {
               if (error) {
                 return connection.rollback(() => {
                   greske = {
-                    message: `Error while reading from CATEGORY_SUBCATEGORY_ID`,
+                    message: `Error while updating PCS`,
                     error: error
                   };
                   return res.status(500).json(greske);
                 });
               }
 
-              try {
-                c_sc_id = result[0]["CATEGORY_SUBCATEGORY_ID"];
-                throw `Doslo je do greske pri dodeljivanju vrednosti promenljivoj c_sc_id`;
-              } catch (error) {
-                greske = {
-                  message: `Error while initializing variable c_sc_id`,
-                  error: error
-                };
-              }
-
-              connection.query(
-                "INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)",
-                [c_sc_id, lastInsertedId_part, req.body.model_id],
-                error => {
-                  if (error) {
-                    return connection.rollback(() => {
-                      greske = {
-                        message: `Error while inserting into PART_CATEGORY_SUBCATEGORY`,
-                        error: error
-                      };
-                      return res.status(500).json(greske);
-                    });
-                  }
-
-                  connection.commit(error => {
+              connection.commit(error => {
+                if (error) {
+                  return connection.rollback(() => {
                     connection.release();
-                    if (error) {
-                      return connection.rollback(() => {
-                        greske = {
-                          message: `Error while commiting`,
-                          error: error
-                        };
-                        return res.status(400).json(greske);
-                      });
-                    }
-
-                    res.status(200).json({
-                      message: "Successfully added new Part",
-                      part_id: lastInsertedId_part
-                    });
+                    greske = {
+                      message: `Error while commiting`,
+                      error: error
+                    };
+                    return res.status(400).json(greske);
                   });
                 }
-              );
+                connection.release();
+                res.status(200).json({
+                  message: "Successfully updated new Part",
+                  part_id: lastInsertedId_part
+                });
+              });
             }
           );
         }

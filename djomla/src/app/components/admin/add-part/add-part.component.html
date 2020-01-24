@@ -52,7 +52,7 @@
               <button (click)="removePart()" [hidden]="(part.id === null || part.id === undefined)" class="btn-danger">
                 Ukloni
               </button>
-              <button [hidden]="(part.id === null || part.id === undefined)" class="btn-warning">
+              <button (click)="updatePart()" [hidden]="(part.id === null || part.id === undefined)" class="btn-warning">
                 Promeni
               </button>
             </div>

@@ -26,25 +26,27 @@ exports.deletePhotos = (req, res) => {
 
       function deleting(i) {
         if (i < req.body.images.length) {
-          image = `${req.body.images[i]}`;
+          image = req.body.images[i];
           console.log(`Image for deleting: ${image}\n`);
           connection.query(
             "DELETE FROM `PICTURE` WHERE `PICTURE`.`PICTURE_DEST` = ?",
             [image],
-            (error, result) => {
-              console.log(`Ovo je result ${JSON.stringify(result)}`);
+            (error, result, fileds) => {
+              console.log(
+                `Ovo je result ${JSON.stringify(result.affectedRows)}`
+              );
+              console.log(`Ovo su polja ${fileds}`);
+              // if (result.affectedRows === 0) {
+              //   return res.status(500).json({
+              //     message: `Image ${req.body.images[i]} does not exist`
+              //   });
+              // }
               if (error) {
                 return connection.rollback(() => {
-                  return res.status(500).json({
+                  return res.status(400).json({
                     message: `Error deleting image ${req.body.images[i]}`,
                     error: error
                   });
-                });
-              }
-
-              if (result.affectedRows === 0) {
-                return res.status(500).json({
-                  message: `Image ${req.body.images[i]} does not exist`
                 });
               }
 
@@ -54,27 +56,35 @@ exports.deletePhotos = (req, res) => {
                 // if (x === i) {
                 connection.commit(error => {
                   if (error) {
-                    return connection.rollback(() => {});
+                    return connection.rollback(() => {
+                      connection.release();
+                    });
                   }
 
                   for (let x = 0; x < req.body.images.length; x++) {
-                    try {
-                      console.log(
-                        `Image trying to be executed: ${req.body.images[x]}`
-                      );
-                      fs.unlink(req.body.images[x], err => {
-                        console.log(`Image successfully deleted: ${err}`);
-                      });
-                    } catch (error) {
-                      if (error) console.log("FUCK YOU");
-                      return res.status(500).json({
-                        message: `Error deleting image ${req.body.images[x]}`,
-                        error: error
-                      });
-                    }
+                    // try {
+                    //   console.log(
+                    //     `Image trying to be executed: ${req.body.images[x]}`
+                    //   );
+                    //   fs.unlink(req.body.images[x], err => {
+                    //     console.log(`Image successfully deleted: ${err}`);
+                    //   });
+                    // } catch (error) {
+                    //   if (error) console.log("FUCK YOU");
+                    //   return res.status(500).json({
+                    //     message: `Error deleting image ${req.body.images[x]}`,
+                    //     error: error
+                    //   });
+                    // }
+                    console.log(
+                      `Image trying to be executed: ${req.body.images[x]}`
+                    );
+                    fs.unlink(req.body.images[x], err => {
+                      console.log(`Image successfully deleted: ${err}`);
+                    });
                   }
-
                   connection.release();
+
                   return res.status(200).json({
                     messageDatabase: "Successfully deleted images from database"
                   });
@@ -150,7 +160,7 @@ exports.multipleUpload = async (req, res) => {
           });
 
         let part_id = req.query.part_id;
-        let i = 0;
+        console.log("Id dela: " + part_id);
 
         function addQuery(i) {
           if (i < req.files.length) {
@@ -158,16 +168,18 @@ exports.multipleUpload = async (req, res) => {
               "INSERT INTO `PICTURE` (`PICTURE_DEST`, `PART_ID`, `PICTURE_NAME`) VALUES (?,?,?);",
               [req.files[i].path, part_id, req.files[i].filename],
               (error, result) => {
+                console.log("Rezultat inserta: ");
+                console.log(result);
                 if (error) {
                   return connection.rollback(() => {
                     //Kod za brisanje slika
-                    for (let i = 0; i < req.files.length; i++) {
-                      try {
-                        fs.unlinkSync(req.files[i].path);
-                        //file removed
-                      } catch (err) {
-                        console.error(err);
-                      }
+                    for (let x = 0; x < req.files.length; x++) {
+                      fs.unlink(req.body.files[x].path, err => {
+                        if (err) {
+                          console.log(err);
+                          return res.status(400).json({ error: err });
+                        }
+                      });
                     }
                     return res.status(500).json({
                       message: "Error inserting images",
@@ -180,6 +192,7 @@ exports.multipleUpload = async (req, res) => {
                   connection.commit(error => {
                     if (error) {
                       return connection.rollback(() => {
+                        connection.release();
                         return res.status(500).json({
                           message: `Error while commiting`,
                           error: error
