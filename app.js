@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require("path");
 // const path = require('path');
 
 const makerRoutes = require("./Routes/MakerRoutes");
@@ -8,6 +9,8 @@ const categoryRoutes = require("./Routes/CategoryRoutes");
 const subcategoryRoutes = require("./Routes/SubcategoryRoutes");
 const partRoutes = require("./Routes/PartRoutes");
 const otherRoutes = require("./Routes/OtherRoutes");
+const loginRoutes = require("./Routes/LoginRoutes");
+const imageRoutes = require("./Routes/ImageRoutes");
 
 const app = express(); // Inicijalizacija app
 
@@ -34,7 +37,9 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/subcategory", subcategoryRoutes);
 app.use("/api/part", partRoutes);
 app.use("/api/other", otherRoutes);
+app.use("/api/login", loginRoutes);
+app.use("/api/images", imageRoutes);
 // app.use('/api/auth', userRoutes);
-// app.use('/images', express.static(path.join(__dirname, 'images')));
-
+// app.use("/Images", express.static(path.join(__dirname, "Images")));
+app.use(express.static(__dirname + "/Images"));
 module.exports = app;

@@ -7,6 +7,6 @@ router.post("/", subcategoryControler.createSubcategory);
 router.post("/getAllSubcategories", subcategoryControler.getAllSubcategories);
 router.get("/:subcategory_id", subcategoryControler.getOneSubcategory);
 router.put("/", subcategoryControler.updateOneSubcategory);
-router.delete("/", subcategoryControler.deleteOneSubcategory); // POST, remove
+router.post("/remove", subcategoryControler.deleteOneSubcategory); // POST, remove
 
 module.exports = router;

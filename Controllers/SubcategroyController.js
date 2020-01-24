@@ -9,12 +9,10 @@ exports.createSubcategory = (req, res) => {
 
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.beginTransaction(error => {
       if (error)
@@ -44,7 +42,7 @@ exports.createSubcategory = (req, res) => {
 
           connection.query(
             "INSERT INTO `CATEGORY_SUBCATEGORY` (`CATEGORY_ID`, `SUBCATEGORY_ID`) VALUES (?, ?)",
-            [categoryID, lastInsertId],
+            [categoryID, lastInsertId_subcategory],
             error => {
               if (error) {
                 return connection.rollback(() => {
@@ -60,16 +58,15 @@ exports.createSubcategory = (req, res) => {
                 if (error) {
                   return connection.rollback(() => {
                     greske = { message: `Error while commiting`, error: error };
+                    connection.release();
                     return res.status(500).json(greske);
                   });
                 }
                 connection.release();
-                res
-                  .status(200)
-                  .json({
-                    message: "Successfully added new Subcategroy",
-                    subcategory_id: lastInsertId_subcategory
-                  });
+                res.status(200).json({
+                  message: "Successfully added new Subcategroy",
+                  subcategory_id: lastInsertId_subcategory
+                });
               });
             }
           );
@@ -83,32 +80,28 @@ exports.createSubcategory = (req, res) => {
 exports.getAllSubcategories = (req, res) => {
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query(
       "SELECT S.SUBCATEGORY_NAME, S.SUBCATEGORY_ID FROM `CATEGORY_SUBCATEGORY` AS CS JOIN SUBCATEGORY AS S USING(SUBCATEGORY_ID) WHERE CATEGORY_ID = ?",
       [req.body.category_id],
       (error, result) => {
+        connection.release();
         if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Something went wrong with our app or servers`,
+            error: error
+          });
         } else {
           if (result.length <= 0) {
-            res.status(200).json({ message: "Subcategories not found." });
+            res.status(200).json(result);
           } else {
             res.status(200).json(result);
           }
         }
-        connection.release();
       }
     );
   });
@@ -118,32 +111,28 @@ exports.getAllSubcategories = (req, res) => {
 exports.getOneSubcategory = (req, res) => {
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query(
       "select * from `SUBCATEGORY` where `SUBCATEGORY_ID` = ?",
       [req.params.subcategory_id],
       (error, result) => {
+        connection.release();
         if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Something went wrong with our app or servers`,
+            error: error
+          });
         } else {
           if (result.length <= 0) {
-            res.status(200).json({ message: "Subcategory not found." });
+            res.status(400).json(result);
           } else {
             res.status(200).json(result);
           }
         }
-        connection.release();
       }
     );
   });
@@ -152,44 +141,36 @@ exports.getOneSubcategory = (req, res) => {
 //Controler for updating one Subcategory
 exports.updateOneSubcategory = (req, res) => {
   if ((!req.body.subcategory_name, !req.body.subcategory_id))
-    return res
-      .status(400)
-      .json({
-        message: "Please provide a valid data for updating Subcategory"
-      });
+    return res.status(400).json({
+      message: "Please provide a valid data for updating Subcategory"
+    });
 
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query(
       "UPDATE `SUBCATEGORY` SET `SUBCATEGORY_NAME` = ? WHERE `SUBCATEGORY`.`SUBCATEGORY_ID` = ?",
       [req.body.subcategory_name, req.body.subcategory_id],
       (error, result) => {
+        connection.release();
         if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Something went wrong with our app or servers`,
+            error: error
+          });
         } else {
           if (result.affectedRows == 0) {
-            res.status(200).json({ message: "Subcategory is not found." });
+            res.status(400).json({ message: "Subcategory is not found." });
           } else {
-            res
-              .status(200)
-              .json({
-                message: `Subcategory with id=${req.body.subcategory_id} is successfully updatet to ${req.body.subcategory_name}.\n`
-              });
+            res.status(200).json({
+              message: `Subcategory with id=${req.body.subcategory_id} is successfully updatet to ${req.body.subcategory_name}.\n`
+            });
           }
         }
-        connection.release();
       }
     );
   });
@@ -204,36 +185,30 @@ exports.deleteOneSubcategory = (req, res) => {
 
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query(
       "DELETE FROM `SUBCATEGORY` WHERE `SUBCATEGORY`.`SUBCATEGORY_ID` = ?",
       [req.body.subcategory_id],
       (error, result) => {
+        connection.release();
         if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Something went wrong with our app or servers`,
+            error: error
+          });
         } else {
           if (result.affectedRows == 0) {
-            res.status(200).json({ message: "Subcategory is not found." });
+            res.status(400).json({ message: "Subcategory is not found." });
           } else {
-            res
-              .status(200)
-              .json({
-                message: `Subcategory with id: ${req.body.subcategory_id} is successfully deleted.`
-              });
+            res.status(200).json({
+              message: `Subcategory with id: ${req.body.subcategory_id} is successfully deleted.`
+            });
           }
         }
-        connection.release();
       }
     );
   });

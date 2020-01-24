@@ -1,13 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const modelControler = require('../Controllers/ModelController');
+const modelControler = require("../Controllers/ModelController");
 
-
-router.post('/', modelControler.createModel);
-router.get('/', modelControler.getAllModels);
-router.get('/:model_id', modelControler.getOneModel);
-router.put('/', modelControler.updateOneModel);
-router.delete('/', modelControler.deleteOneModel);
+router.post("/", modelControler.createModel);
+router.post("/getAllModels", modelControler.getAllModels);
+router.get("/:model_id", modelControler.getOneModel);
+router.put("/", modelControler.updateOneModel);
+router.post("/remove", modelControler.deleteOneModel);
 
 module.exports = router;

@@ -23,21 +23,17 @@ exports.multipleUpload = async (req, res) => {
 
     pool.getConnection((error, connection) => {
       if (error)
-        res
-          .status(500)
-          .json({
-            message: `Error while getting new connection from pool`,
-            error: error
-          });
+        res.status(500).json({
+          message: `Error while getting new connection from pool`,
+          error: error
+        });
 
       connection.beginTransaction(error => {
         if (error)
-          res
-            .status(500)
-            .json({
-              message: `Error while starting transaction`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Error while starting transaction`,
+            error: error
+          });
 
         // let part_id = req.part_id;
         let part_id = 1;
@@ -60,12 +56,10 @@ exports.multipleUpload = async (req, res) => {
                         console.error(err);
                       }
                     }
-                    return res
-                      .status(500)
-                      .json({
-                        message: "Error inserting images",
-                        error: error
-                      });
+                    return res.status(500).json({
+                      message: "Error inserting images",
+                      error: error
+                    });
                   });
                 }
                 i++;
@@ -73,12 +67,10 @@ exports.multipleUpload = async (req, res) => {
                   connection.commit(error => {
                     if (error) {
                       return connection.rollback(() => {
-                        return res
-                          .status(500)
-                          .json({
-                            message: `Error while commiting`,
-                            error: error
-                          });
+                        return res.status(500).json({
+                          message: `Error while commiting`,
+                          error: error
+                        });
                       });
                     }
                     connection.release();
@@ -120,138 +112,126 @@ exports.createPart = (req, res) => {
     !req.body.subcategory_id,
     !req.body.model_id)
   )
-    res
-      .status(400)
-      .json({
-        error:
-          "Please provide a valid data for this fucking complicated query!!!!! :O :O :O"
+    res.status(400).json({
+      error:
+        "Please provide a valid data for this fucking complicated query!!!!! :O :O :O"
+    });
+
+  pool.getConnection((error, connection) => {
+    if (error)
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
       });
 
-  for (let i = 1; i < 5000; i++) {
-    pool.getConnection((error, connection) => {
+    connection.beginTransaction(error => {
       if (error)
-        res
-          .status(500)
-          .json({
-            message: `Error while getting new connection from pool`,
-            error: error
-          });
+        res.status(500).json({
+          message: `Error while starting transaction`,
+          error: error
+        });
 
-      connection.beginTransaction(error => {
-        if (error)
-          res
-            .status(500)
-            .json({
-              message: `Error while starting transaction`,
-              error: error
+      let lastInsertedId_part;
+      let c_sc_id;
+      let greske = { message: String, error: String };
+
+      connection.query(
+        "INSERT INTO `PART` (`PART_NAME`, `PART_PRICE`, `PART_DESC`) VALUES (?, ?, ?)",
+        [req.body.part_name, req.body.part_price, req.body.part_desc],
+        (error, result) => {
+          if (error) {
+            return connection.rollback(() => {
+              greske = {
+                message: `Error while inserting into PART`,
+                error: error
+              };
+              return res.status(500).json(greske);
             });
+          }
 
-        let lastInsertedId_part;
-        let c_sc_id;
-        let greske = { message: String, error: String };
+          lastInsertedId_part = result.insertId;
 
-        connection.query(
-          "INSERT INTO `PART` (`PART_NAME`, `PART_PRICE`, `PART_DESC`) VALUES (?, ?, ?)",
-          [
-            req.body.part_name + i.toString(),
-            req.body.part_price + i.toString(),
-            req.body.part_desc + i.toString()
-          ],
-          (error, result) => {
-            if (error) {
-              return connection.rollback(() => {
-                greske = {
-                  message: `Error while inserting into PART`,
-                  error: error
-                };
-                return res.status(500).json(greske);
-              });
-            }
-
-            lastInsertedId_part = result.insertId;
-
-            connection.query(
-              "SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?",
-              [req.body.category_id, req.body.subcategory_id],
-              (error, result) => {
-                if (error) {
-                  return connection.rollback(() => {
-                    greske = {
-                      message: `Error while reading from CATEGORY_SUBCATEGORY_ID`,
-                      error: error
-                    };
-                    return res.status(500).json(greske);
-                  });
-                }
-
-                try {
-                  c_sc_id = result[0]["CATEGORY_SUBCATEGORY_ID"];
-                  throw `Doslo je do greske pri dodeljivanju vrednosti promenljivoj c_sc_id`;
-                } catch (error) {
+          connection.query(
+            "SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?",
+            [req.body.category_id, req.body.subcategory_id],
+            (error, result) => {
+              if (error) {
+                return connection.rollback(() => {
                   greske = {
-                    message: `Error while initializing variable c_sc_id`,
+                    message: `Error while reading from CATEGORY_SUBCATEGORY_ID`,
                     error: error
                   };
-                }
+                  return res.status(500).json(greske);
+                });
+              }
 
-                connection.query(
-                  "INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)",
-                  [c_sc_id, lastInsertedId_part, req.body.model_id],
-                  error => {
+              try {
+                c_sc_id = result[0]["CATEGORY_SUBCATEGORY_ID"];
+                throw `Doslo je do greske pri dodeljivanju vrednosti promenljivoj c_sc_id`;
+              } catch (error) {
+                greske = {
+                  message: `Error while initializing variable c_sc_id`,
+                  error: error
+                };
+              }
+
+              connection.query(
+                "INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)",
+                [c_sc_id, lastInsertedId_part, req.body.model_id],
+                error => {
+                  if (error) {
+                    return connection.rollback(() => {
+                      greske = {
+                        message: `Error while inserting into PART_CATEGORY_SUBCATEGORY`,
+                        error: error
+                      };
+                      return res.status(500).json(greske);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    connection.release();
                     if (error) {
                       return connection.rollback(() => {
                         greske = {
-                          message: `Error while inserting into PART_CATEGORY_SUBCATEGORY`,
+                          message: `Error while commiting`,
                           error: error
                         };
                         return res.status(500).json(greske);
                       });
                     }
 
-                    connection.commit(error => {
-                      if (error) {
-                        return connection.rollback(() => {
-                          greske = {
-                            message: `Error while commiting`,
-                            error: error
-                          };
-                          z;
-                          return res.status(500).json(greske);
-                        });
-                      }
-                      connection.release();
-                      // res.status(200).json({ message: "Successfully added new Part", part_id: lastInsertedId_part });
+                    res.status(200).json({
+                      message: "Successfully added new Part",
+                      part_id: lastInsertedId_part
                     });
-                  }
-                );
-              }
-            );
-          }
-        );
-      });
+                  });
+                }
+              );
+            }
+          );
+        }
+      );
     });
-  }
+  });
 };
 
 //Controler for geting all Parts
 exports.getAllParts = (req, res) => {
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query("select * from `PART`", (error, result) => {
+      connection.release();
       if (error) {
-        res
-          .status(500)
-          .json({
-            message: `Something went wrong with our app or servers`,
-            error: error
-          });
+        res.status(500).json({
+          message: `Something went wrong with our app or servers`,
+          error: error
+        });
       } else {
         if (result.length <= 0) {
           res.status(200).json({ message: `No Parts found.` });
@@ -259,7 +239,6 @@ exports.getAllParts = (req, res) => {
           res.status(200).json(result);
         }
       }
-      connection.release();
     });
   });
 };
@@ -268,24 +247,21 @@ exports.getAllParts = (req, res) => {
 exports.getOnePart = (req, res) => {
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query(
       "select * from `PART` where `PART_ID` = ?",
       [req.params.part_id],
       (error, result) => {
+        connection.release();
         if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Something went wrong with our app or servers`,
+            error: error
+          });
         } else {
           if (result.length <= 0) {
             res.status(200).json("Part is not found.");
@@ -293,7 +269,6 @@ exports.getOnePart = (req, res) => {
             res.status(200).json(result);
           }
         }
-        connection.release();
       }
     );
   });
@@ -313,45 +288,100 @@ exports.updateOnePart = (req, res) => {
 
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
+
+    connection.beginTransaction(error => {
+      if (error)
+        res.status(500).json({
+          message: `Error while starting transaction`,
           error: error
         });
 
-    connection.query(
-      "UPDATE `PART` SET `PART_NAME` = ?, `PART_PRICE` = ?, `PART_DESC` = ? WHERE `PART`.`PART_ID` = ?; ",
-      [
-        req.body.part_name,
-        req.body.part_price,
-        req.body.part_desc,
-        req.body.part_id
-      ],
-      (error, result) => {
-        if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
+      let lastInsertedId_part;
+      let c_sc_id;
+      let greske = { message: String, error: String };
+
+      connection.query(
+        "INSERT INTO `PART` (`PART_NAME`, `PART_PRICE`, `PART_DESC`) VALUES (?, ?, ?)",
+        [req.body.part_name, req.body.part_price, req.body.part_desc],
+        (error, result) => {
+          if (error) {
+            return connection.rollback(() => {
+              greske = {
+                message: `Error while inserting into PART`,
+                error: error
+              };
+              return res.status(500).json(greske);
             });
-        } else {
-          if (result.affectedRows == 0) {
-            res.status(200).json({ message: "Part is not found." });
-          } else {
-            res
-              .status(201)
-              .json({
-                message:
-                  `Part is successfully updatet to ${req.body.part_name}.\n` +
-                  result.message
-              });
           }
+
+          lastInsertedId_part = result.insertId;
+
+          connection.query(
+            "SELECT `CATEGORY_SUBCATEGORY_ID` FROM `CATEGORY_SUBCATEGORY` WHERE `CATEGORY_ID` = ? AND `SUBCATEGORY_ID` = ?",
+            [req.body.category_id, req.body.subcategory_id],
+            (error, result) => {
+              if (error) {
+                return connection.rollback(() => {
+                  greske = {
+                    message: `Error while reading from CATEGORY_SUBCATEGORY_ID`,
+                    error: error
+                  };
+                  return res.status(500).json(greske);
+                });
+              }
+
+              try {
+                c_sc_id = result[0]["CATEGORY_SUBCATEGORY_ID"];
+                throw `Doslo je do greske pri dodeljivanju vrednosti promenljivoj c_sc_id`;
+              } catch (error) {
+                greske = {
+                  message: `Error while initializing variable c_sc_id`,
+                  error: error
+                };
+              }
+
+              connection.query(
+                "INSERT INTO `PART_CATEGORY_SUBCATEGORY` (`CATEGORY_SUBCATEGORY_ID`, `PART_ID`, `MODEL_ID`) VALUES (?, ?, ?)",
+                [c_sc_id, lastInsertedId_part, req.body.model_id],
+                error => {
+                  if (error) {
+                    return connection.rollback(() => {
+                      greske = {
+                        message: `Error while inserting into PART_CATEGORY_SUBCATEGORY`,
+                        error: error
+                      };
+                      return res.status(500).json(greske);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    connection.release();
+                    if (error) {
+                      return connection.rollback(() => {
+                        greske = {
+                          message: `Error while commiting`,
+                          error: error
+                        };
+                        return res.status(400).json(greske);
+                      });
+                    }
+
+                    res.status(200).json({
+                      message: "Successfully added new Part",
+                      part_id: lastInsertedId_part
+                    });
+                  });
+                }
+              );
+            }
+          );
         }
-        connection.release();
-      }
-    );
+      );
+    });
   });
 };
 
@@ -362,36 +392,30 @@ exports.deleteOnePart = (req, res) => {
 
   pool.getConnection((error, connection) => {
     if (error)
-      res
-        .status(500)
-        .json({
-          message: `Error while getting new connection from pool`,
-          error: error
-        });
+      res.status(500).json({
+        message: `Error while getting new connection from pool`,
+        error: error
+      });
 
     connection.query(
       "DELETE FROM `PART` WHERE `PART`.`PART_ID` = ?",
       [req.body.part_id],
       (error, result) => {
+        connection.release();
         if (error) {
-          res
-            .status(500)
-            .json({
-              message: `Something went wrong with our app or servers`,
-              error: error
-            });
+          res.status(500).json({
+            message: `Something went wrong with our app or servers`,
+            error: error
+          });
         } else {
           if (result.affectedRows == 0) {
             res.status(200).json({ message: "Part is not found." });
           } else {
-            res
-              .status(200)
-              .json({
-                message: `Part with id: ${req.body.part_id} is successfully deleted.`
-              });
+            res.status(200).json({
+              message: `Part with id: ${req.body.part_id} is successfully deleted.`
+            });
           }
         }
-        connection.release();
       }
     );
   });

@@ -110,12 +110,13 @@ exports.getPartsByName = (req, res) => {
         error: error
       });
 
-    let value = "%" + req.query.search_name + "%";
+    let value = "%" + req.body.search_name + "%";
     console.log(value);
     const sqlQuery =
       "SELECT P.PART_ID, P.`PART_NAME`, P.`PART_PRICE`, P.`PART_DESC`, M.MODEL_NAME, MK.MAKER_NAME, C.CATEGORY_NAME, SC.SUBCATEGORY_NAME FROM `PART_CATEGORY_SUBCATEGORY` AS PCS RIGHT JOIN `PART` AS P ON PCS.PART_ID = P.PART_ID AND P.`PART_NAME` LIKE ? JOIN `MODEL` AS M ON PCS.MODEL_ID = M.MODEL_ID JOIN `MAKER` AS MK ON M.MAKER_ID = MK.MAKER_ID LEFT JOIN `CATEGORY_SUBCATEGORY` AS CS ON PCS.CATEGORY_SUBCATEGORY_ID = CS.CATEGORY_SUBCATEGORY_ID LEFT JOIN `CATEGORY` AS C ON CS.CATEGORY_ID = C.CATEGORY_ID LEFT JOIN `SUBCATEGORY` AS SC ON CS.SUBCATEGORY_ID = SC.SUBCATEGORY_ID";
 
     connection.query(sqlQuery, [value], (error, result) => {
+      connection.release();
       if (error) {
         res.status(500).json({
           message: `Something went wrong with our app or servers`,
@@ -124,9 +125,9 @@ exports.getPartsByName = (req, res) => {
       } else {
         console.log(req.query);
         if (result.length <= 0) {
-          res.status(404).json({ message: "No parts found" });
+          res.status(200).json(result);
         } else {
-          const page = parseInt(req.query.page) || 1;
+          const page = parseInt(req.body.page) || 1;
           const pageSize = 5;
           const pager = paginate(result.length, page, pageSize);
 
@@ -141,7 +142,6 @@ exports.getPartsByName = (req, res) => {
           return res.json({ pager, pageOfItems });
         }
       }
-      connection.release();
     });
   });
 };
