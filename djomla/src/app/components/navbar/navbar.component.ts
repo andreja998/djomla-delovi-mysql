@@ -19,6 +19,11 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  logout() {
+    this.authUser.logout();
+    this.router.navigate(['delovi']);
+  }
+
   clickRoute() {
     this.router.navigate([{ outlets: { 'admin-router': ['add-mark'] } }]);
   }

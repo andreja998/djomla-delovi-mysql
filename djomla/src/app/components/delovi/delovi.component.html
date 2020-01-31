@@ -4,7 +4,7 @@
       <app-pretrazivac #pretrazivac [searchName]="searchName" [searchMode]="searchMode" (search)="onSearch($event)"></app-pretrazivac>
     </div>
   </div>
-  <!-- <div class="row pt-4 logo-section">
+  <div *ngIf="parts.length === 0" class="row pt-4 logo-section">
     <div class="col-md-5">
       <div class="wrapper-img-logo">
         <img src="assets/images/DjomlaLogoFit.png" alt="Image" class="logo-img" />
@@ -14,7 +14,7 @@
       <h1 class="text-center">Polovni delovi za automobile!</h1>
       <p></p>
     </div>
-  </div> -->
+  </div>
   <div class="row pt-4">
     <div class="col-md-12 col-sm-12">
       <div class="container-fluid">
@@ -24,7 +24,8 @@
               <div class="row">
                 <div class="col-sm-12 col-md-4 p-0">
                   <div class="wrapper-thumbnail">
-                    <img src="assets/images/DjomlaLogo.png" alt="Image" class="" />
+                    <img *ngIf="part.imgUrl != null" src="{{ part.imgUrl }}" alt="Image" class="" />
+                    <img *ngIf="part.imgUrl == null" src="assets/images/DjomlaLogo.png" alt="Image" class="" />
                   </div>
                 </div>
                 <div class="col-sm-12 col-md-8 clearfix">
@@ -34,11 +35,10 @@
                         <!-- <h5 class="text-capitalize">
                           {{ part.name }}
                         </h5> -->
-                        <ng-container *ngIf="part.name.length > 90">
-                          <h5>{{ part.name.slice(0, 15) }}...</h5>
-                        </ng-container>
-                        <ng-container *ngIf="part.name.length <= 90">
-                          <h5>{{ part.name }}</h5>
+                        <ng-container *ngIf="part.name != null">
+                          <h5 *ngIf="part.name.length > 90 && part.name">{{ part.name.slice(0, 15) }}...</h5>
+
+                          <h5 *ngIf="part.name.length <= 90 && part.name">{{ part.name }}</h5>
                         </ng-container>
                       </div>
                       <div class="col-12 description">
@@ -51,8 +51,8 @@
                               <p class="">Potkategorija: {{ part.subCategory.name }}</p>
                             </div>
                             <div class="col-lg-8 col-sm-12">
-                              <ng-container *ngIf="screenSmall == false">
-                                <ng-container *ngIf="part.description.length < 300">
+                              <ng-container *ngIf="screenSmall == false && part.description != null">
+                                <ng-container *ngIf="part.description.length <= 299">
                                   <p class="small">{{ part.description }}</p>
                                 </ng-container>
                                 <ng-container *ngIf="part.description.length >= 300">

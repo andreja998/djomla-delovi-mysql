@@ -87,7 +87,7 @@ export class PretrazivacComponent implements OnInit {
 
   onCategoryChange(value: any) {
     if (this.selectedCategory) {
-      this.carService.getSubCategories(value).subscribe(subCategories => {
+      this.carService.getSubCategories(this.selectedCategory.id).subscribe(subCategories => {
         this.subCategories = subCategories;
       });
     } else {

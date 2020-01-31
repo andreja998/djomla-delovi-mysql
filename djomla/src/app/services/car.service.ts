@@ -73,7 +73,8 @@ export class CarService {
             new SearchItem(element['MAKER_NAME'], element['MAKER_ID']),
             new SearchItem(element['MODEL_NAME'], element['MODEL_ID']),
             new SearchItem(element['CATEGORY_NAME'], element['CATEGORY_ID']),
-            new SearchItem(element['SUBCATEGORY_NAME'], element['SUBCATEGORY_ID'])
+            new SearchItem(element['SUBCATEGORY_NAME'], element['SUBCATEGORY_ID']),
+            'http://localhost:3000/' + element['PICTURE_NAME']
           );
           newParts.push(part);
         });
