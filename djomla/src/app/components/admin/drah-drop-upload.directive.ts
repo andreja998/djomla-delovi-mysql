@@ -6,7 +6,7 @@ import { Directive, Output, EventEmitter, HostBinding, HostListener } from '@ang
 export class DrahDropUploadDirective {
   @Output() fileDropped = new EventEmitter<any>();
 
-  @HostBinding('style.background-color') private background = '#ffffff';
+  @HostBinding('style.background-color') background = '#ffffff';
 
   // Dragover Event
   @HostListener('dragover', ['$event']) dragOver(event) {

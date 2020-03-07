@@ -8,7 +8,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthUserService {
-  url = 'http://localhost:3000/api/';
+  url = 'http://prodajaautodelova.rs/back/api/';
   roleSubject: BehaviorSubject<string>;
   public role: Observable<string>;
 

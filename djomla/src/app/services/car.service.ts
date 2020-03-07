@@ -10,12 +10,12 @@ import { SearchItem, Part } from '../utils';
 export class CarService {
   public currentPage: Observable<number>;
   public name: string;
-  private baseUrl = 'http://localhost:3000/api/';
+  private baseUrl = 'http://prodajaautodelova.rs/back/';
 
   constructor(private http: HttpClient) {}
 
   getMarks(): Observable<SearchItem[]> {
-    return this.http.get(this.baseUrl + 'maker', {}).pipe(
+    return this.http.get(this.baseUrl + 'api/maker', {}).pipe(
       map((res: any) => {
         console.log(res);
         const marks: SearchItem[] = [];
@@ -29,7 +29,7 @@ export class CarService {
   }
 
   getModels(markId: number): Observable<SearchItem[]> {
-    return this.http.post(this.baseUrl + 'model/getAllModels', { maker_id: markId }).pipe(
+    return this.http.post(this.baseUrl + 'api/model/getAllModels', { maker_id: markId }).pipe(
       map((res: any) => {
         const models: SearchItem[] = [];
         console.log(res);
@@ -58,8 +58,9 @@ export class CarService {
       model_id: modelId,
       option: queryToCall
     };
+    console.log(json);
 
-    return this.http.post(this.baseUrl + 'other/getAllPArts?page=' + pageNumber, json).pipe(
+    return this.http.post(this.baseUrl + 'api/other/getAllPArts?page=' + pageNumber, json).pipe(
       map(res => {
         console.log(res);
 
@@ -74,7 +75,7 @@ export class CarService {
             new SearchItem(element['MODEL_NAME'], element['MODEL_ID']),
             new SearchItem(element['CATEGORY_NAME'], element['CATEGORY_ID']),
             new SearchItem(element['SUBCATEGORY_NAME'], element['SUBCATEGORY_ID']),
-            'http://localhost:3000/' + element['PICTURE_NAME']
+            this.baseUrl + element['PICTURE_NAME']
           );
           newParts.push(part);
         });
@@ -86,7 +87,7 @@ export class CarService {
 
   getPartsByName(searchName: string, pageNumber: number): Observable<Object> {
     console.log({ search_name: searchName, page: pageNumber });
-    return this.http.post(this.baseUrl + 'other/getPartsByName', { search_name: searchName, page: pageNumber }).pipe(
+    return this.http.post(this.baseUrl + 'api/other/getPartsByName', { search_name: searchName, page: pageNumber }).pipe(
       map(res => {
         const newParts: Part[] = [];
         if (res['pageOfItems']) {
@@ -112,7 +113,7 @@ export class CarService {
   }
 
   getPart(partId: number): Observable<Part> {
-    return this.http.post(this.baseUrl + 'other/getOnePart', { part_id: partId }).pipe(
+    return this.http.post(this.baseUrl + 'api/other/getOnePart', { part_id: partId }).pipe(
       map(res => {
         console.log(res);
         const part = new Part(
@@ -133,7 +134,7 @@ export class CarService {
   }
 
   getCategories(): Observable<SearchItem[]> {
-    return this.http.get(this.baseUrl + 'category', {}).pipe(
+    return this.http.get(this.baseUrl + 'api/category', {}).pipe(
       map((res: any) => {
         console.log(res);
         const categories: SearchItem[] = [];
@@ -147,7 +148,7 @@ export class CarService {
   }
 
   updateCategory(category: SearchItem): Observable<any> {
-    return this.http.put(this.baseUrl + 'category', { category_id: category.id, category_name: category.name }).pipe(
+    return this.http.put(this.baseUrl + 'api/category', { category_id: category.id, category_name: category.name }).pipe(
       map(res => {
         console.log(res);
         return;
@@ -156,7 +157,7 @@ export class CarService {
   }
 
   removeCategory(id: number): Observable<any> {
-    return this.http.post(this.baseUrl + 'category/remove', { category_id: id }).pipe(
+    return this.http.post(this.baseUrl + 'api/category/remove', { category_id: id }).pipe(
       map(res => {
         return;
       })
@@ -164,7 +165,7 @@ export class CarService {
   }
 
   getSubCategories(categoryId: number): Observable<SearchItem[]> {
-    return this.http.post(this.baseUrl + 'subcategory/getAllSubcategories', { category_id: categoryId }).pipe(
+    return this.http.post(this.baseUrl + 'api/subcategory/getAllSubcategories', { category_id: categoryId }).pipe(
       map((res: any) => {
         const categories: SearchItem[] = [];
         console.log(res);
@@ -180,7 +181,7 @@ export class CarService {
   updateSubCategory(category: SearchItem, subCategory: SearchItem): Observable<any> {
     console.log(subCategory);
     return this.http
-      .put(this.baseUrl + 'subcategory', {
+      .put(this.baseUrl + 'api/subcategory', {
         category_id: category.id,
         subcategory_id: subCategory.id,
         subcategory_name: subCategory.name
@@ -197,7 +198,7 @@ export class CarService {
   }
 
   createSubCategory(subCategoryName: string, category: SearchItem): Observable<SearchItem> {
-    return this.http.post(this.baseUrl + 'subcategory', { subcategory_name: subCategoryName, category_id: category.id }).pipe(
+    return this.http.post(this.baseUrl + 'api/subcategory', { subcategory_name: subCategoryName, category_id: category.id }).pipe(
       map(res => {
         const subCategory = new SearchItem(subCategoryName, res['subcategory_id']);
         return subCategory;
@@ -206,12 +207,12 @@ export class CarService {
   }
 
   getImagesById(partId: number): Observable<Object[]> {
-    return this.http.post(this.baseUrl + 'images/getPhotos', { part_id: partId }).pipe(
+    return this.http.post(this.baseUrl + 'api/images/getPhotos', { part_id: partId }).pipe(
       map((res: any) => {
         const images: object[] = [];
         console.log(res);
         res['result'].forEach(item => {
-          images.push({ url: 'http://localhost:3000/' + item['PICTURE_NAME'], destination: item['PICTURE_DEST'] });
+          images.push({ url: this.baseUrl + item['PICTURE_NAME'], destination: item['PICTURE_DEST'] });
         });
 
         return images;
@@ -229,7 +230,8 @@ export class CarService {
       maker_id: part.mark.id,
       model_id: part.model.id
     };
-    return this.http.post(this.baseUrl + 'part', jsonPart).pipe(
+    console.log(jsonPart);
+    return this.http.post(this.baseUrl + 'api/part', jsonPart).pipe(
       map(res => {
         console.log(res);
         part.id = res['part_id'];
@@ -259,7 +261,8 @@ export class CarService {
       maker_id: part.mark.id,
       model_id: part.model.id
     };
-    return this.http.put(this.baseUrl + 'part', jsonPart).pipe(
+    console.log(jsonPart);
+    return this.http.put(this.baseUrl + 'api/part', jsonPart).pipe(
       map(res => {
         return part;
       })
@@ -267,7 +270,7 @@ export class CarService {
   }
 
   createModel(modelName: string, mark: SearchItem): Observable<any> {
-    return this.http.post(this.baseUrl + 'model', { model_name: modelName, maker_id: mark.id }).pipe(
+    return this.http.post(this.baseUrl + 'api/model', { model_name: modelName, maker_id: mark.id }).pipe(
       map((res: any) => {
         const model = new SearchItem(modelName, res['model_id']);
         return model;
@@ -276,7 +279,7 @@ export class CarService {
   }
 
   removeModel(modelId: number, markId: number): Observable<any> {
-    return this.http.post(this.baseUrl + 'model/remove', { maker_id: markId, model_id: modelId }).pipe(
+    return this.http.post(this.baseUrl + 'api/model/remove', { maker_id: markId, model_id: modelId }).pipe(
       map((res: any) => {
         return;
       })
@@ -286,7 +289,7 @@ export class CarService {
   updateModel(modelId: number, modelName: string): Observable<any> {
     console.log(modelId);
     console.log(modelName);
-    return this.http.put(this.baseUrl + 'model', { model_name: modelName, model_id: modelId }).pipe(
+    return this.http.put(this.baseUrl + 'api/model', { model_name: modelName, model_id: modelId }).pipe(
       map((res: any) => {
         return;
       })
@@ -294,7 +297,7 @@ export class CarService {
   }
 
   createMark(name: string): Observable<SearchItem> {
-    return this.http.post(this.baseUrl + 'maker', { maker_name: name }).pipe(
+    return this.http.post(this.baseUrl + 'api/maker', { maker_name: name }).pipe(
       map((res: any) => {
         const mark = new SearchItem(name, res.maker_id);
         return mark;
@@ -303,7 +306,7 @@ export class CarService {
   }
 
   updateMark(markId: number, markName: string): Observable<SearchItem> {
-    return this.http.put(this.baseUrl + 'maker', { maker_name: markName, maker_id: markId }).pipe(
+    return this.http.put(this.baseUrl + 'api/maker', { maker_name: markName, maker_id: markId }).pipe(
       map((res: any) => {
         const mark = new SearchItem(markName, markId);
 
@@ -313,7 +316,7 @@ export class CarService {
   }
 
   removeMark(markId: number): Observable<any> {
-    return this.http.post(this.baseUrl + 'maker/remove', { maker_id: markId }).pipe(
+    return this.http.post(this.baseUrl + 'api/maker/remove', { maker_id: markId }).pipe(
       map((res: any) => {
         return;
       })
@@ -321,7 +324,7 @@ export class CarService {
   }
 
   createCategory(name: string): Observable<SearchItem> {
-    return this.http.post(this.baseUrl + 'category', { category_name: name }).pipe(
+    return this.http.post(this.baseUrl + 'api/category', { category_name: name }).pipe(
       map((res: any) => {
         const category = new SearchItem(name, res['category_id']);
         return category;
@@ -339,7 +342,7 @@ export class CarService {
     });
 
     return this.http
-      .post(this.baseUrl + 'images/uploadImages?part_id=' + partId, formData, {
+      .post(this.baseUrl + 'api/images/uploadImages?part_id=' + partId, formData, {
         reportProgress: true,
         observe: 'events'
       })
@@ -349,7 +352,7 @@ export class CarService {
   removeImages(urls: string[]): Observable<any> {
     console.log('Before urls');
     console.log(urls);
-    return this.http.post(this.baseUrl + 'images/deleteImages', { images: urls }).pipe(
+    return this.http.post(this.baseUrl + 'api/images/deleteImages', { images: urls }).pipe(
       map(res => {
         console.log(res);
         return;

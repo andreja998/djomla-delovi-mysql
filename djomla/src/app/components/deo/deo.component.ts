@@ -11,9 +11,9 @@ import Swiper from 'swiper';
   styleUrls: ['./deo.component.scss']
 })
 export class DeoComponent implements OnInit, OnChanges, AfterViewInit {
-  private part: Part = new Part(null, null, null, null, null, null, null, null, null);
-  private images: string[] = [];
-  private ngxImages = [];
+  part: Part = new Part();
+  images: string[] = [];
+  ngxImages = [];
   @ViewChild('ngxgallery', { static: true }) gallery: NgxGalleryComponent;
   public galleryOptions: INgxGalleryOptions[] = [
     {

@@ -9,7 +9,6 @@ import { NgxGalleryModule } from 'ngx-gallery';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { PaginationComponent } from './components/pagination/pagination.component';
 import { PocetnaComponent } from './components/pocetna/pocetna.component';
 import { PretrazivacComponent } from './components/pretrazivac/pretrazivac.component';
 import { DeloviComponent } from './components/delovi/delovi.component';
@@ -29,12 +28,12 @@ import { LoginComponent } from './components/login/login.component';
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { ToastrModule } from 'ngx-toastr';
 import { DrahDropUploadDirective } from './components/admin/drah-drop-upload.directive';
+import { HesitateDirective } from './hesitate.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    PaginationComponent,
     PocetnaComponent,
     PretrazivacComponent,
     DeloviComponent,
@@ -47,7 +46,8 @@ import { DrahDropUploadDirective } from './components/admin/drah-drop-upload.dir
     AddSubcategoryComponent,
     AddPartComponent,
     LoginComponent,
-    DrahDropUploadDirective
+    DrahDropUploadDirective,
+    HesitateDirective
   ],
   imports: [
     BrowserModule,

@@ -53,7 +53,7 @@
   border-radius: 5px;
   border: 1px solid rgba(55, 84, 170, 0.116);
   align-items: baseline;
-  background-color: rgb(231, 231, 231);
+  background-color: rgb(240, 240, 240);
 }
 .dugme {
   border: 1px solid rgba(5, 45, 111, 1);
@@ -98,7 +98,7 @@
 .wrapper-thumbnail {
   position: relative;
   top: 50%;
-  max-height: 250px;
+  max-height: 150px;
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -117,4 +117,17 @@
   left: 50%;
   top: 0;
   transform: translate(-50%);
+}
+
+.core-details p {
+  font-size: 13px;
+}
+
+.core-details {
+  // background-color: white;
+  // border-radius: 5px;
+  // width: fit-content;
+  // box-shadow: inset 1.8px 1.8px 3px rgba(55, 84, 170, 0.116), inset 2.7px 2.7px 4px rgba(55, 84, 170, 0.048), inset 4.7px 4.7px 6px rgba(0, 0, 0, 0.054),
+  //   inset 6.5px 6.5px 9px rgba(0, 0, 0, 0.089), inset -2.8px -2.8px 2.2px rgba(255, 255, 255, 0.157), inset -6.7px -6.7px 5.3px rgba(255, 255, 255, 0.123),
+  //   inset -8.5px -8.5px 10px rgba(255, 255, 255, 0.102), inset -12.3px -12.3px 11.9px rgba(255, 255, 255, 0.075);
 }

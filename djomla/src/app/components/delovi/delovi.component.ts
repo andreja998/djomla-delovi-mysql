@@ -18,7 +18,7 @@ export class DeloviComponent implements OnInit, OnChanges {
   parts: Array<any> = [];
   pageOfItems: Array<any> = [];
 
-  pager = {};
+  pager: any;
   markId: number;
   modelId: number;
   categoryId: number;
@@ -58,6 +58,8 @@ export class DeloviComponent implements OnInit, OnChanges {
       }
     });
   }
+
+  hoveringImage() {}
 
   ngOnChanges() {}
 

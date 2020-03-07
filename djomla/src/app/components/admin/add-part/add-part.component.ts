@@ -29,7 +29,7 @@ export class AddPartComponent implements OnInit {
   searchText: string = '';
 
   part: Part = new Part();
-  pager = {};
+  pager: any;
   parts: Part[] = [];
 
   constructor(
@@ -43,7 +43,7 @@ export class AddPartComponent implements OnInit {
   ngOnInit() {
     this.partF = this.formBuilder.group({
       partName: [null, [Validators.required]],
-      description: [null, [Validators.required]],
+      description: [null],
       price: [null, [Validators.required]],
       markG: new FormGroup({
         mark: new FormControl(null, [Validators.required]),
@@ -51,7 +51,7 @@ export class AddPartComponent implements OnInit {
       }),
       categoryG: new FormGroup({
         category: new FormControl(null, [Validators.required]),
-        subCategory: new FormControl(null, [Validators.required])
+        subCategory: new FormControl(null)
       })
     });
     this.imgForm = this.formBuilder.group({

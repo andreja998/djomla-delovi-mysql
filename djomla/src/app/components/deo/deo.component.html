@@ -10,7 +10,7 @@
 
   <!-- Portfolio Item Row -->
   <div class="row">
-    <div class="col-md-6 p-sm-0 pr-md-2">
+    <div class="col-md-7 p-sm-0 pr-md-2">
       <div class="swiper-container gallery-top">
         <div class="swiper-wrapper">
           <div *ngFor="let img of images; let i = index" class="wrapper-thumbnail swiper-slide">
@@ -32,8 +32,8 @@
       </div>
     </div>
 
-    <div class="col-md-6 part-details">
-      <h3 class="pt-4 pb-2 text-success">Dogovor</h3>
+    <div class="col-md-5 part-details">
+      <h3 class="pt-4 pb-2 text-success">{{ part.price }}</h3>
       <hr />
 
       <div>

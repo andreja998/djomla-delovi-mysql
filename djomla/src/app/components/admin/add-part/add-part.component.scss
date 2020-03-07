@@ -116,6 +116,11 @@
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
+  button {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 10px;
+  }
 }
 .crud-buttons button {
   flex: 0 0 30%;

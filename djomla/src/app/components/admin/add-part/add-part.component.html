@@ -30,7 +30,15 @@
           </div>
           <div formGroupName="markG" class="content form-group">
             <h3>Marka i model</h3>
-            <ng-select [items]="marks" (change)="onMarkChange($event)" [(ngModel)]="part.mark" bindLabel="name" placeholder="izaberite marku" formControlName="mark" class="custom"></ng-select>
+            <ng-select
+              [items]="marks"
+              (change)="onMarkChange($event)"
+              [(ngModel)]="part.mark"
+              bindLabel="name"
+              placeholder="izaberite marku"
+              formControlName="mark"
+              class="custom"
+            ></ng-select>
             <ng-select
               [items]="models"
               [(ngModel)]="part.model"
@@ -46,13 +54,13 @@
             <input type="text" class="input-control" placeholder="cena" [(ngModel)]="part.price" formControlName="price" />
             <textarea cols="100" rows="7" [(ngModel)]="part.description" formControlName="description"></textarea>
             <div class="crud-buttons">
-              <button (click)="createPart()" class="btn-success">
+              <button (click)="createPart()" [disabled]="partF.invalid" class="btn-success">
                 Dodaj
               </button>
-              <button (click)="removePart()" [hidden]="(part.id === null || part.id === undefined)" class="btn-danger">
+              <button (click)="removePart()" [hidden]="part.id === null || part.id === undefined" class="btn-danger">
                 Ukloni
               </button>
-              <button (click)="updatePart()" [hidden]="(part.id === null || part.id === undefined)" class="btn-warning">
+              <button (click)="updatePart()" [disabled]="partF.invalid" [hidden]="part.id === null || part.id === undefined" class="btn-warning">
                 Promeni
               </button>
             </div>
@@ -77,15 +85,22 @@
                 <input type="file" name="avatars" #fileField (change)="prepare($event.target.files)" hidden multiple />
               </div>
             </div>
-            <div *ngFor="let file of fileArr; let i = index" class="col-md-6 col-sm-12 pt-4 mb-4">
+            <div *ngFor="let file of fileArr; let i = index" class="col-md-4 col-6 pt-4 mb-4">
               <div class="wrapper-thumbnail">
                 <img [src]="sanitize(file['url'])" alt="" class="" />
               </div>
 
               <!-- <i class="far fa-times-circle remove" (click)="removeImage(i)"></i> -->
-              <span [ngClass]="{
-                'badge-success': !file['remove'], 'badge-danger': file['remove']
-              }" class="badge remove" (click)="removeImage(i)"><div *ngIf="file['remove']">Poništite</div><div *ngIf="!file['remove']">Uklonite</div></span>
+              <span
+                [ngClass]="{
+                  'badge-success': !file['remove'],
+                  'badge-danger': file['remove']
+                }"
+                class="badge remove"
+                (click)="removeImage(i)"
+                ><div *ngIf="file['remove']">Poništite</div>
+                <div *ngIf="!file['remove']">Uklonite</div></span
+              >
               <!-- <p class="message">{{ msg }}</p> -->
             </div>
           </div>
@@ -130,21 +145,21 @@
     <div class="col-sm-12">
       <div class="pb-0 pt-3">
         <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
-          <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item first-item">
-            <a routerLink [queryParams]="{ page: 1 }" class="page-link">First</a>
-          </li>
-          <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item previous-item">
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item first-item">
+            <a routerLink [queryParams]="{ page: 1 }" class="page-link">Prva</a>
+          </li> -->
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item previous-item">
             <a routerLink [queryParams]="{ page: pager.currentPage - 1 }" class="page-link">Previous</a>
-          </li>
+          </li> -->
           <li *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }" class="page-item number-item">
             <a [routerLink]="[]" (click)="loadPage(page)" class="page-link">{{ page }}</a>
           </li>
-          <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item next-item">
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item next-item">
             <a routerLink [queryParams]="{ page: pager.currentPage + 1 }" class="page-link">Next</a>
-          </li>
-          <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item last-item">
+          </li> -->
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item last-item">
             <a routerLink [queryParams]="{ page: pager.totalPages }" class="page-link">Last</a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>
