@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
     console.log(this.loginForm.get('username').value);
     this.authUser.login(this.loginForm.get('username').value, this.loginForm.get('password').value).subscribe(res => {
       console.log(res);
+      console.log(this.authUser.getRole());
       this.router.navigate(['admin']);
     });
   }

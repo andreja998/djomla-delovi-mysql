@@ -144,14 +144,14 @@
   <div class="row">
     <div class="col-sm-12">
       <div class="pb-0 pt-3">
-        <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <ul *ngIf="pager?.pages && pager?.pages.length" class="pagination">
           <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item first-item">
             <a routerLink [queryParams]="{ page: 1 }" class="page-link">Prva</a>
           </li> -->
           <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item previous-item">
             <a routerLink [queryParams]="{ page: pager.currentPage - 1 }" class="page-link">Previous</a>
           </li> -->
-          <li *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }" class="page-item number-item">
+          <li *ngFor="let page of pager?.pages" [ngClass]="{ active: pager?.currentPage === page }" class="page-item number-item">
             <a [routerLink]="[]" (click)="loadPage(page)" class="page-link">{{ page }}</a>
           </li>
           <!-- <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item next-item">

@@ -44,7 +44,7 @@
                       <div class="col-12 description">
                         <div class="container-fluid p-0">
                           <div class="row p-0">
-                            <div class="col-lg-3 col-sm-12">
+                            <div *ngIf="screenSmall == false" class="col-lg-3 col-sm-12">
                               <div class="core-details">
                                 <p class="mb-1">Marka: {{ part.mark.name }}</p>
                                 <p class="mb-1">Model: {{ part.model.name }}</p>
@@ -52,7 +52,7 @@
                                 <p class="">Potkategorija: {{ part.subCategory.name }}</p>
                               </div>
                             </div>
-                            <div class="col-lg-7 col-sm-12">
+                            <div class="col-lg-9 col-sm-12">
                               <ng-container *ngIf="screenSmall == false && part.description != null">
                                 <ng-container *ngIf="part.description.length <= 299">
                                   <p class="small">{{ part.description }}</p>
@@ -62,7 +62,10 @@
                                 </ng-container>
                               </ng-container>
                             </div>
-                            <div class="col-lg-1">
+                            <!-- <div class="col-lg-1">
+                              <div class="cena justify-content-center clearfix">
+                                <h4 class="text-success float-left mt-2">{{ part.price }}</h4>
+                              </div>
                               <a
                                 href="javascript:void(0);"
                                 (click)="onPartClick(part.id)"
@@ -71,15 +74,26 @@
                                 aria-pressed="true"
                                 >Pogledajte</a
                               >
+                            </div> -->
+                          </div>
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="cena justify-content-center clearfix">
+                                <h4 class="text-success float-left mt-2">Cena: {{ part.price }}</h4>
+                                <a
+                                  href="javascript:void(0);"
+                                  (click)="onPartClick(part.id)"
+                                  class="btn btn-lg active dugme float-right"
+                                  role="button"
+                                  aria-pressed="true"
+                                  >Pogledajte</a
+                                >
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-12 align-self-end">
-                        <div class="cena justify-content-center clearfix">
-                          <h4 class="text-success float-left mt-2">{{ part.price }}</h4>
-                        </div>
-                      </div>
+                      <div class="col-12 align-self-end"></div>
                     </div>
                   </div>
                 </div>
@@ -90,12 +104,12 @@
         <div class="row">
           <div class="col">
             <div class="pb-0 pt-3">
-              <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-sm">
+              <ul *ngIf="pager?.pages && pager?.pages.length" class="pagination pagination-sm">
                 <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item first-item">
                   <a routerLink [queryParams]="{ page: 1 }" class="page-link">First</a>
                 </li> -->
 
-                <li *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }" class="page-item number-item">
+                <li *ngFor="let page of pager?.pages" [ngClass]="{ active: pager?.currentPage === page }" class="page-item number-item">
                   <a [routerLink]="[]" (click)="loadPage(page)" class="page-link">{{ page }}</a>
                 </li>
 

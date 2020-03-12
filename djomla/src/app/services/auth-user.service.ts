@@ -8,7 +8,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthUserService {
-  url = 'http://prodajaautodelova.rs/back/api/';
+  url = 'https://prodajaautodelova.rs/';
   roleSubject: BehaviorSubject<string>;
   public role: Observable<string>;
 
@@ -18,7 +18,7 @@ export class AuthUserService {
   }
 
   login(Username: string, Password: string): Observable<any> {
-    return this.http.post(this.url + 'login', { username: Username, password: Password }).pipe(
+    return this.http.post(this.url + 'api/login', { username: Username, password: Password }).pipe(
       map(res => {
         console.log(res);
         if (res['token']) {

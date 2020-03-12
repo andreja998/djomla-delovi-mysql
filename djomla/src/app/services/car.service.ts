@@ -10,7 +10,7 @@ import { SearchItem, Part } from '../utils';
 export class CarService {
   public currentPage: Observable<number>;
   public name: string;
-  private baseUrl = 'http://prodajaautodelova.rs/back/';
+  private baseUrl = 'https://prodajaautodelova.rs/';
 
   constructor(private http: HttpClient) {}
 
