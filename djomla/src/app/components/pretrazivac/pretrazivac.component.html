@@ -8,7 +8,7 @@
             <ng-select [items]="marks" bindLabel="name" [(ngModel)]="selectedMark" (change)="onMarkChange($event)" placeholder="Marka" class="custom">
             </ng-select>
           </div>
-          <div class="col-md-2 pl-0 pr-1">
+          <div class="col-md-2 pl-0 pr-1 mb-sm-2">
             <ng-select
               [items]="models"
               bindLabel="name"
@@ -18,7 +18,7 @@
               class="custom"
             ></ng-select>
           </div>
-          <div class="col-md-2 pl-0 pr-1">
+          <div class="col-md-2 pl-0 pr-1 mb-sm-2">
             <ng-select
               [items]="categories"
               bindLabel="name"
@@ -30,7 +30,7 @@
             >
             </ng-select>
           </div>
-          <div class="col-md-4 pl-0">
+          <div class="col-md-4 pl-0 mb-sm-2">
             <ng-select
               [items]="subCategories"
               bindLabel="name"
