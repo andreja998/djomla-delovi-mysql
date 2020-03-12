@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -29,7 +29,13 @@ import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { ToastrModule } from 'ngx-toastr';
 import { DrahDropUploadDirective } from './components/admin/drah-drop-upload.directive';
 import { HesitateDirective } from './hesitate.directive';
-
+export class CustomHammerConfig extends HammerGestureConfig  {
+  overrides = {
+    pinch: { enable: false },
+    rotate: { enable: false }
+  };
+}
+// @ts-ignore
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,7 +67,8 @@ import { HesitateDirective } from './hesitate.directive';
     NgxGalleryModule,
     ToastrModule.forRoot()
   ],
-  providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS }, JwtHelperService],
+  providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS }, JwtHelperService, { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+

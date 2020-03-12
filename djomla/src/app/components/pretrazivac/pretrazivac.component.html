@@ -4,7 +4,7 @@
       <!-- <h1>{{ searchName }}</h1> -->
       <div class="container-fluid select-boxes">
         <div class="row m-0">
-          <div class="col-md-2 pr-1">
+          <div class="col-md-2 pr-1 pl-0">
             <ng-select [items]="marks" bindLabel="name" [(ngModel)]="selectedMark" (change)="onMarkChange($event)" placeholder="Marka" class="custom">
             </ng-select>
           </div>
@@ -64,7 +64,7 @@
         class="bs-stepper"
       >
         <div class="bs-stepper-header" role="tablist">
-         
+
           <div class="step" data-target="#logins-part">
             <button
               type="button"
