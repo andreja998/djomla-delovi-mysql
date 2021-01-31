@@ -29,6 +29,8 @@ import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { ToastrModule } from 'ngx-toastr';
 import { DrahDropUploadDirective } from './components/admin/drah-drop-upload.directive';
 import { HesitateDirective } from './hesitate.directive';
+import { ListaDelovaComponent } from './components/lista-delova/lista-delova.component';
+
 export class CustomHammerConfig extends HammerGestureConfig  {
   overrides = {
     pinch: { enable: false },
@@ -53,7 +55,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
     AddPartComponent,
     LoginComponent,
     DrahDropUploadDirective,
-    HesitateDirective
+    HesitateDirective,
+    ListaDelovaComponent
   ],
   imports: [
     BrowserModule,

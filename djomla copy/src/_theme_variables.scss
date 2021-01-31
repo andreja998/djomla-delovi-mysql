@@ -1,0 +1,79 @@
+@import '~@angular/material/theming';
+
+/* For use in src/lib/core/theming/_palette.scss */
+$md-primary: (
+  50: #e1e5ee,
+  100: #b5bfd4,
+  200: #8494b7,
+  300: #52699a,
+  400: #2d4985,
+  500: #08296f,
+  600: #072467,
+  700: #061f5c,
+  800: #041952,
+  900: #020f40,
+  A100: #7586ff,
+  A200: #425aff,
+  A400: #0f2dff,
+  A700: #001ff5,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$md-accent: (
+  50: #fff5e1,
+  100: #ffe5b3,
+  200: #ffd480,
+  300: #ffc34d,
+  400: #ffb627,
+  500: #ffa901,
+  600: #ffa201,
+  700: #ff9801,
+  800: #ff8f01,
+  900: #ff7e00,
+  A100: #ffffff,
+  A200: #fff8f2,
+  A400: #ffdbbf,
+  A700: #ffcda6,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #000000,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+$app-primary: mat-palette($md-primary, 500);
+$app-accent: mat-palette($md-accent, 500);
+
+// Custom Sass colors vars (will be available in all the project)
+$primary: mat-color($app-primary);
+$primary-1: mat-color($app-primary, 300);
+$primary-2: #426bca;
+$accent: mat-color($app-accent, 100);
+$background: #f9f9f9;
+$secondary-1: mat-color($app-accent, 400);

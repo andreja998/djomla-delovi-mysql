@@ -1,0 +1,167 @@
+<div class="container-fluid">
+  <div class="my-row no-wrap mt-4">
+    <input type="text" class="search-input" placeholder="naziv dela" [(ngModel)]="searchText" />
+
+    <a class="btn btn-lg btn-outline-light search-button" role="button" href="javascript:void(0);" (click)="onSearch()"><i class="fa fa-fw fa-search"></i></a>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-lg-6 p-0">
+      <form class="form" [formGroup]="partF">
+        <div class="wrapper">
+          <div formGroupName="categoryG" class="content form-group">
+            <h3>Kategorija i potkategorija</h3>
+            <ng-select
+              [items]="categories"
+              [(ngModel)]="part.category"
+              bindLabel="name"
+              (change)="onCategoryChange($event)"
+              placeholder="izaberite kategoriju"
+              formControlName="category"
+              class="custom"
+            ></ng-select>
+            <ng-select
+              [items]="subCategories"
+              [(ngModel)]="part.subCategory"
+              bindLabel="name"
+              placeholder="izaberite potkategoriju"
+              formControlName="subCategory"
+              class="custom"
+            ></ng-select>
+          </div>
+          <div formGroupName="markG" class="content form-group">
+            <h3>Marka i model</h3>
+            <ng-select
+              [items]="marks"
+              (change)="onMarkChange($event)"
+              [(ngModel)]="part.mark"
+              bindLabel="name"
+              placeholder="izaberite marku"
+              formControlName="mark"
+              class="custom"
+            ></ng-select>
+            <ng-select
+              [items]="models"
+              [(ngModel)]="part.model"
+              bindLabel="name"
+              placeholder="izaberite model"
+              formControlName="model"
+              class="custom"
+            ></ng-select>
+          </div>
+          <div class="content">
+            <h3>Detalji</h3>
+            <input type="text" class="input-control" placeholder="naziv dela" [(ngModel)]="part.name" formControlName="partName" />
+            <input type="text" class="input-control" placeholder="cena" [(ngModel)]="part.price" formControlName="price" />
+            <textarea cols="100" rows="7" [(ngModel)]="part.description" formControlName="description"></textarea>
+            <div class="crud-buttons">
+              <button (click)="createPart()" [disabled]="partF.invalid" class="btn-success">
+                Dodaj
+              </button>
+              <button (click)="removePart()" [hidden]="part.id === null || part.id === undefined" class="btn-danger">
+                Ukloni
+              </button>
+              <button (click)="updatePart()" [disabled]="partF.invalid" [hidden]="part.id === null || part.id === undefined" class="btn-warning">
+                Promeni
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-lg-6">
+      <div class="fileUploadWrapper">
+        <form [formGroup]="imgForm" enctype="multipart/form-data">
+          <div class="row">
+            <!-- Progress Bar -->
+            <div class="col-md-12" *ngIf="progress">
+              <div class="progress form-group">
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width.%]="progress"></div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="fileupload" appDrahDropUpload (click)="fileField.click()" (fileDropped)="prepare($event)">
+                <span class="ddinfo">Choose a file or drag here</span>
+                <input type="file" name="avatars" #fileField (change)="prepare($event.target.files)" hidden multiple />
+              </div>
+            </div>
+            <div *ngFor="let file of fileArr; let i = index" class="col-md-4 col-6 pt-4 mb-4">
+              <div class="wrapper-thumbnail">
+                <img [src]="sanitize(file['url'])" alt="" class="" />
+              </div>
+
+              <!-- <i class="far fa-times-circle remove" (click)="removeImage(i)"></i> -->
+              <span
+                [ngClass]="{
+                  'badge-success': !file['remove'],
+                  'badge-danger': file['remove']
+                }"
+                class="badge remove"
+                (click)="removeImage(i)"
+                ><div *ngIf="file['remove']">Poništite</div>
+                <div *ngIf="!file['remove']">Uklonite</div></span
+              >
+              <!-- <p class="message">{{ msg }}</p> -->
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="search-trigger">
+  <a class="btn btn-lg btn-outline-light search-button" role="button" href="javascript:void(0);" (click)="showSearch()"><i class="fa fa-fw fa-search"></i></a>
+</div> -->
+<div id="search-content" class="search-part container-fluid pt-2">
+  <a class="close" (click)="closeSearch()" href="javascript:void(0);">&times;</a>
+  <div class="row mt-4 inner-content pt-2">
+    <div *ngIf="parts.length <= 0" class="col-12"><h3 class="text-center">Nema delova</h3></div>
+    <div class="col-sm-12 part-content mb-2 p-2" *ngFor="let part of parts">
+      <div class="container-fluid pl-1 pr-1">
+        <div class="row">
+          <div class="col-md-4">
+            <img src="assets/images/Pocetna.png" alt="Image" class="img-fluid" />
+          </div>
+          <div class="col-md-8 clearfix">
+            <h4 class="text-capitalize font-weight-bold">
+              {{ part.name }}
+            </h4>
+            <p class="small mb-1">Marka: {{ part.mark.name }}</p>
+            <p class="small mb-1">Model: {{ part.model.name }}</p>
+            <p class="small mb-1">Kategorija: {{ part.category.name }}</p>
+            <p class="small">Potkategorija: {{ part.subCategory.name }}</p>
+            <div class="cena justify-content-center clearfix">
+              <h4 class="text-success float-left mt-2">Cena: {{ part.price }}</h4>
+              <a href="javascript:void(0);" (click)="onPartClick(part.id)" class="btn btn-lg active dugme float-right" role="button" aria-pressed="true"
+                >Promenite</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="pb-0 pt-3">
+        <ul *ngIf="pager?.pages && pager?.pages.length" class="pagination">
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item first-item">
+            <a routerLink [queryParams]="{ page: 1 }" class="page-link">Prva</a>
+          </li> -->
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item previous-item">
+            <a routerLink [queryParams]="{ page: pager.currentPage - 1 }" class="page-link">Previous</a>
+          </li> -->
+          <li *ngFor="let page of pager?.pages" [ngClass]="{ active: pager?.currentPage === page }" class="page-item number-item">
+            <a [routerLink]="[]" (click)="loadPage(page)" class="page-link">{{ page }}</a>
+          </li>
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item next-item">
+            <a routerLink [queryParams]="{ page: pager.currentPage + 1 }" class="page-link">Next</a>
+          </li> -->
+          <!-- <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item last-item">
+            <a routerLink [queryParams]="{ page: pager.totalPages }" class="page-link">Last</a>
+          </li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

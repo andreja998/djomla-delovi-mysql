@@ -1,0 +1,84 @@
+<!-- Page Content -->
+<ngx-gallery #ngxgallery [options]="galleryOptions" [images]="ngxImages"> </ngx-gallery>
+
+<div class="container-fluid">
+  <!-- Portfolio Item Heading -->
+
+  <div class="row pb-3 part-name">
+    <h2>{{ part.name }}</h2>
+  </div>
+
+  <!-- Portfolio Item Row -->
+  <div class="row">
+    <div class="col-md-7 p-sm-0 pr-md-2">
+      <div class="swiper-container gallery-top">
+        <div class="swiper-wrapper">
+          <div *ngFor="let img of images; let i = index" class="wrapper-thumbnail swiper-slide">
+            <img src="{{ img }}" (click)="imageClick(i)" alt="img" />
+          </div>
+        </div>
+        <!-- Add Arrows -->
+        <div class="swiper-button-next swiper-button-black"></div>
+        <div class="swiper-button-prev swiper-button-black"></div>
+      </div>
+      <div class="swiper-container gallery-thumbs">
+        <div class="swiper-wrapper">
+          <div *ngFor="let img of images" class="swiper-slide">
+            <div class="wrapper-thumbnail">
+              <img src="{{ img }}" alt="img" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5 part-details">
+      <h3 class="pt-4 pb-2 text-success">{{ part.price }}</h3>
+      <hr />
+
+      <div>
+        <h3 class="pb-2">Detalji</h3>
+        <p class="mb-3">Marka: {{ part.mark.name }}</p>
+        <p class="mb-3">Model: {{ part.model.name }}</p>
+        <p class="mb-3">Kategorija: {{ part.category.name }}</p>
+        <p class="">Potkategorija: {{ part.subCategory.name }}</p>
+
+        <hr />
+        <h3>Opis</h3>
+        <p class="pt-2 lead description">{{ part.description }}</p>
+      </div>
+    </div>
+  </div>
+  <!-- /.row -->
+
+  <!-- Related Projects Row -->
+  <h3 class="my-4">Related Projects</h3>
+
+  <div class="row">
+    <div class="col-md-3 col-sm-6 mb-4">
+      <a href="#">
+        <img class="img-fluid" src="http://placehold.it/500x300" alt="" />
+      </a>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+      <a href="#">
+        <img class="img-fluid" src="http://placehold.it/500x300" alt="" />
+      </a>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+      <a href="#">
+        <img class="img-fluid" src="http://placehold.it/500x300" alt="" />
+      </a>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+      <a href="#">
+        <img class="img-fluid" src="http://placehold.it/500x300" alt="" />
+      </a>
+    </div>
+  </div>
+  <!-- /.row -->
+</div>
+<!-- /.container -->
